@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cuota extends Model
 {
-    protected $filliable = ['idPlan','fecha','monto',
+    protected $filliable = ['nro','idPlan','fecha','monto',
     'estado'];
     public $timestamps = false;
 }

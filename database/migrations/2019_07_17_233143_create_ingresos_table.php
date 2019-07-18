@@ -15,6 +15,7 @@ class CreateIngresosTable extends Migration
     {
         Schema::create('ingresos', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('nro');
             $table->unsignedinteger('idProveedor');
             $table->dateTime('fecha');
             $table->integer('cantidad');
