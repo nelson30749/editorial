@@ -12,10 +12,35 @@ class ProveedorController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $proveedor = Proveedor::all();
-        return $proveedor;
+        // if(!$request->ajax()) return redirect('/');
+        $buscar=$request->buscar;
+        $criterio=$request->criterio;
+        if($buscar=='')
+        {
+        $proveedores = Proveedor::where('estado','=','1')
+        ->orderBy('id','desc')
+        ->paginate(10);
+        }
+        else{
+            $proveedores= Promotor::where('proveedores.nombre','like'.'%'.$buscar.'%')
+            ->where('apellido','like'.'%'.$buscar.'%')
+            ->where('estado','=','1')
+            ->orderBy('id','desc')->paginate(10);
+        }
+
+        return [
+            'pagination' => [
+                'total'        => $proveedores->total(),
+                'current_page' => $proveedores->currentPage(),
+                'per_page'     => $proveedores->perPage(),
+                'last_page'    => $proveedores->lastPage(),
+                'from'         => $proveedores->firstItem(),
+                'to'           => $proveedores->lastItem(),
+            ],
+            'proveedores' => $proveedores
+        ];
     }
 
     
@@ -28,7 +53,8 @@ class ProveedorController extends Controller
      */
     public function store(Request $request)
     {
-        $proveedor = new Poveedor();
+        if(!$request->ajax()) return redirect('/');
+        $proveedor = new Proveedor();
         $proveedor->nombre = $request->nombre;
         $proveedor->telefono = $request->telefono;
         $proveedor->direccion = $request->direccion;
@@ -47,7 +73,8 @@ class ProveedorController extends Controller
      */
     public function update(Request $request)
     {
-        $proveedor = Poveedor::findOrFail($request->id);
+        if(!$request->ajax()) return redirect('/');
+        $proveedor = Proveedor::findOrFail($request->id);
         $proveedor->nombre = $request->nombre;
         $proveedor->telefono = $request->telefono;
         $proveedor->direccion = $request->direccion;
@@ -57,14 +84,16 @@ class ProveedorController extends Controller
 
     public function desactivar(Request $request)
     {
-        $proveedor = Poveedor::findOrFail($request->id);
+        if(!$request->ajax()) return redirect('/');
+        $proveedor = Proveedor::findOrFail($request->id);
         $proveedor->estado = '0';
         $proveedor->save();
     }
 
     public function activar(Request $request)
     {
-        $proveedor = Poveedor::findOrFail($request->id);
+        if(!$request->ajax()) return redirect('/');
+        $proveedor = Proveedor::findOrFail($request->id);
         $proveedor->estado = '1';
         $proveedor->save();
     }
