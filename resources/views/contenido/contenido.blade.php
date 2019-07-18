@@ -6,57 +6,46 @@
        </template>
 
        <template v-if="menu==1">   
-       <equipo></equipo>
+       <libro></libro>
        </template> 
 
        <template v-if="menu==2">
-       <categoria></categoria>
-        
+       <ingreso></ingreso>        
        </template>
 
        <template v-if="menu==3">
-                     <horario></horario> 
-     
-       
+       <entrega></entrega>      
        </template>
 
        <template v-if="menu==4">
-                     <empleado></empleado>      
-       <!-- <pago></pago>  -->
+       <promotor></promotor> 
        </template>
 
        <template v-if="menu==5">
-                     <reserva></reserva>
-                         
-       
+       <provincia></provincia>
        </template>
 
        <template v-if="menu==6">
-                     <cliente></cliente>
-       
+       <departamento></departamento>
        </template>
 
        <template v-if="menu==7">
-                     <h1>Contenido del menu 7</h1>
+              <couta></couta>
        </template>
 
        <template v-if="menu==8">
-              <h1>Contenido del menu 8</h1>
-       </template>
-
-       <template v-if="menu==9">
               <h1>Contenido del menu 9</h1>
        </template>
 
-       <template v-if="menu==10">
+       <template v-if="menu==9">
               <h1>Contenido del menu 10</h1>
        </template>
 
-       <template v-if="menu==11">
+       <template v-if="menu==10">
               <h1>Contenido del menu 11</h1>
        </template>
 
-       <template v-if="menu==12">
+       <template v-if="menu==11">
               <h1>Contenido del menu 12</h1>
        </template> 
 
