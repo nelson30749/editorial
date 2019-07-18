@@ -43,7 +43,18 @@ class ProveedorController extends Controller
         ];
     }
 
-    
+    public function select(Request $request)
+    {
+        // if(!$request->ajax()) return redirect('/');
+        $buscar = $request->buscar;
+        $proveedores= Proveedor::where('proveedores.nombre','like','%'.$buscar.'%')
+        ->where('proveedores.estado','=','1')
+        ->orderBy('proveedores.id','desc')
+        ->limit(10)
+        ->get();
+        
+        return ['proveedores' => $proveedores];
+    }
 
     /**
      * Store a newly created resource in storage.

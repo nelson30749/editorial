@@ -76,20 +76,6 @@
                   <td>
                     <button
                       type="button"
-                      @click="verIngreso(data.id)"
-                      class="btn btn-warning btn-sm"
-                    >
-                      <i class="icon-eye"></i>
-                    </button> &nbsp;
-                    <button
-                      type="button"
-                      @click="pdfIngreso(data.id)"
-                      class="btn btn-info btn-sm"
-                    >
-                      <i class="icon-doc"></i>
-                    </button> &nbsp;
-                    <button
-                      type="button"
                       @click="mostrarDetalle('ingreso','actualizar',data)"
                       class="btn btn-warning btn-sm"
                     >
@@ -155,19 +141,20 @@
             <div class="form-group row border">
               <div class="col-md-12">
                 <div class="form-group">
-                  <label for>
-                    Por Concepto De
-                    <br />
+                  <label>
+                    Proveedor
+                    <span v-show="proveedor==''">(*Selecione)</span>
                   </label>
-                  <input
-                    type="text"
-                    v-model="descripcion"
-                    class="form-control"
-                    placeholder="Descripcion"
-                  />
+                  <v-select
+                    v-model="selectedProveedor"
+                    @search="selectProveedor"
+                    label="nombre"
+                    :options="arrayProveedor"
+                    placeholder="Buscar Proveedor.."
+                    @input="getDatosProveedor"
+                  ></v-select>
                 </div>
               </div>
-
               <div class="col-md-12">
                 <div v-show="errorMostrar" class="form-group row div-error">
                   <div class="text-center text-error">
@@ -222,6 +209,7 @@
                   <thead>
                     <tr>
                       <th>Opciones</th>
+                      <td>ID</td>
                       <th>Nombre</th>
                       <th>Genero</th>
                       <th>Grado</th>
@@ -247,6 +235,7 @@
                       </td>
 
                       <td v-text="detalle.nombre"></td>
+                      <td>{{ detalle.genero }}</td>
                       <td v-text="detalle.grado"></td>
                       <td>{{ detalle.descripcion }}</td>
                       <td>{{ detalle.precio }}</td>
@@ -262,12 +251,13 @@
                     </tr>
                     <tr>
                       <td colspan="7">Total</td>
-                      <td>{{ montoTotal }}</td>
+                      <td>Cantidad: {{ sumaCantidad }}</td>
+                      <td>Monto: Bs. {{ montoTotal }}</td>
                     </tr>
                   </tbody>
                   <tbody v-else>
                     <tr>
-                      <td colspan="8">No hay Productos Agregados</td>
+                      <td colspan="9">No hay Productos Agregados</td>
                     </tr>
                   </tbody>
                 </table>
@@ -411,7 +401,6 @@ export default {
       ingreso_id: 0,
       idProveedor: 0,
       proveedor: "",
-      fecha: "",
       cantidad: 0,
       montoTotal: 0,
       arrayData: [],
@@ -425,6 +414,7 @@ export default {
       tipoAccion: 0,
       errorMostrar: 0,
       errorMostrarMsj: [],
+      selectedProveedor:null,
       pagination: {
         total: 0,
         current_page: 0,
@@ -443,7 +433,8 @@ export default {
       genero: "",
       grado: "",
       descripcion: "",
-      precio: 0
+      precio: 0,
+      sumaCantidad:0
     };
     },
     computed: {
@@ -494,7 +485,7 @@ export default {
     selectProveedor(search, loading) {
       let me = this;
       loading(true);
-      var url = "/proveedor/selectProveedor?filtro=" + search;
+      var url = "/proveedor/select?buscar=" + search;
       axios
         .get(url)
         .then(function(response) {
@@ -581,8 +572,8 @@ export default {
       me.listar(page, buscar, criterio);
     },
     encuentra(id) {
-      var sw = 0;
-      for (var i = 0; i < this.arrayDetalle.length; i++) {
+      var sw = false;
+      for (var i = 0; i < this.arrayDetalle.length && sw==false; i++) {
         if (this.arrayDetalle[i].id == id) {
           sw = true;
         }
@@ -596,29 +587,41 @@ export default {
     ingresoTotal() {
       let me = this;
       me.montoTotal = 0;
+      me.sumaCantidad = 0;
       for (var i = 0; i < this.arrayDetalle.length; i++) {
         if (
           me.arrayDetalle[i].cantidad != 0 &&
           me.arrayDetalle[i].cantidad != ""
         ) {
-          me.montoTotal =
-            me.arrayDetalle[i].cantidad * me.arrayDetalle[i].precio +
-            me.montoTotal;
+          // Suma Monto Total
+          me.montoTotal = me.arrayDetalle[i].cantidad * me.arrayDetalle[i].precio +me.montoTotal;
+            // suma Cantidad
+          me.sumaCantidad =me.arrayDetalle[i].cantidad*1 + me.sumaCantidad;
         }
       }
-      return me.montoTotal;
+      // return me.montoTotal;
+      
     },
 
     agregarDetalle() {
       let me = this;
-      if (me.idProducto == 0) {
+      if (me.idLibro == 0) {
+         Swal.fire({
+              position: "center",
+              title: "Error !!",
+              type: "error", 
+              showConfirmButton: false,
+              timer: 1000
+            });
       } else {
-        if (me.encuentra(me.idProducto)) {
-          swal({
-            type: "error",
-            title: "Error...",
-            text: "Este Producto ya se Encuentra Agregado!"
-          });
+        if (me.encuentra(me.idLibro)) {
+          Swal.fire({
+              position: "center",
+              title: "El Producto ya se Encuentra Agregado",
+              type: "error",
+              showConfirmButton: false,
+              timer: 1000
+            });
         } else {
           me.arrayDetalle.push({
             id: me.idLibro,
@@ -635,11 +638,13 @@ export default {
     agregarDetalleModal(data = []) {
       let me = this;
       if (me.encuentra(data["id"])) {
-        swal({
-          type: "error",
-          title: "Error...",
-          text: "Esta Cuenta ya se Encuentra Agregado!"
-        });
+        Swal.fire({
+              position: "center",
+              title: "El Producto ya se Encuentra Agregado",
+              type: "error",
+              showConfirmButton: false,
+              timer: 1000
+            });
       } else {
         me.arrayDetalle.push({
           id: data["id"],
@@ -665,6 +670,7 @@ export default {
           console.log(error);
         });
     },
+
     registrar() {
       if (this.validar()) {
         return;
@@ -675,7 +681,7 @@ export default {
         .post("/ingreso/registrar", {
           idProveedor: this.idProveedor,
           fecha: this.fecha,
-          cantidad: this.cantidad,
+          cantidad: this.sumaCantidad,
           montoTotal: this.montoTotal,
           data: this.arrayDetalle
         })
@@ -701,15 +707,15 @@ export default {
       axios
         .put("/ingreso/actualizar", {
           idProveedor: this.idProveedor,
-          fecha: this.fecha,
-          cantidad: this.cantidad,
+          cantidad: this.sumaCantidad,
           montoTotal: this.montoTotal,
           id: this.ingreso_id,
           data: this.arrayDetalle
         })
         .then(function(response) {
-          me.cerrarModal();
+          me.listado = 1;
           me.listar(1, "", "nombre");
+          me.limpiarRegistro();
         })
         .catch(function(error) {
           console.log(error);
@@ -828,19 +834,29 @@ export default {
       if (this.errorMostrarMsj.length) this.errorMostrar = 1;
       return this.errorMostrar;
     },
+    limpiarRegistro()
+    { 
+      this.proveedor = "";
+      this.selectedProveedor=null;
+      this.idProveedor = 0;
+      this.cantidad = 0;
+      this.montoTotal = 0;
+      this.descripcion = "";
+      this.genero="";
+      this.grado="";
+      this.idLibro=0;
+      this.libro="";
+      this.arrayProveedor=[];
+      this.arrayDetalle = [];
+      this.arrayProveedor=[];
+    },
     mostrarDetalle(modelo, accion, data = []) {
       switch (modelo) {
         case "ingreso": {
           switch (accion) {
             case "registrar": {
               this.listado = 0;
-              this.proveedor = "";
-              this.idProveedor = 0;
-              this.fecha = "";
-              this.cantidad = 0;
-              this.montoTotal = 0;
-              this.descripcion = "";
-              this.arrayDetalle = [];
+              this.limpiarRegistro();
               this.tipoAccion = 1;
               break;
             }
@@ -849,12 +865,13 @@ export default {
               this.tipoAccion = 2;
               this.ingreso_id = data["id"];
               this.idProveedor = data["idProveedor"];
+              this.selectedProveedor={id:data["id"],nombre:data["proveedor"]}
               this.proveedor = data["proveedor"];
-              this.fecha = data["fecha"];
+              this.sumaCantidad=data["cantidad"];
               this.montoTotal = data["montoTotal"];
 
               let me = this;
-              var url = "/ingreso/listarIngresos?id=" + data["id"];
+              var url = "/ingreso/listarDetalle?idIngreso=" + data["id"];
               axios
                 .get(url)
                 .then(function(response) {

@@ -42,6 +42,19 @@ class IngresoController extends Controller
             'ingresos' => $ingresos
         ];
     }
+    public function listarDetalle(Request $request)
+    {
+        // if(!$request->ajax()) return redirect('/');
+            $id=$request->idIngreso;
+            $detalles= DetalleIngreso::join('libros','detalle_ingresos.idLibro','=','libros.id')
+            ->select('libros.id','libros.nombre','libros.genero','libros.grado','libros.descripcion','detalle_ingresos.precio','detalle_ingresos.cantidad')
+            ->where('detalle_ingresos.idIngreso','=',$id)
+            ->where('detalle_ingresos.estado','=','1')
+            ->get();
+     
+        return ['detalles' => $detalles];
+    }
+
 
     public function store(Request $request)
         {   
@@ -50,7 +63,7 @@ class IngresoController extends Controller
             try{
                 $mytime= Carbon::now('America/La_Paz');
                 $ingreso = new Ingreso();
-                $ingreso->nro = $request->nro;
+                $ingreso->nro = 0;
                 $ingreso->idProveedor=$request->idProveedor;
                 $ingreso->fecha = $mytime->toDateTimeString();                
                 $ingreso->cantidad = $request->cantidad;
@@ -64,12 +77,40 @@ class IngresoController extends Controller
                 foreach($detalles as $ep=>$det)
                 {
                     $detalle = new DetalleIngreso();
-                    $detalle->idIngreso= $ingreso->idIngreso;
-                    $detalle->idLibro = $det['idLibro'];
+                    $detalle->idIngreso= $ingreso->id;
+                    $detalle->idLibro = $det['id'];
                     $detalle->cantidad = $det['cantidad'];   
                     $detalle->precio = $det['precio']; 
                     $detalle->estado= '1';
                     $detalle->save();
+                } 
+                DB::commit();
+            } catch (Exception $e){
+                DB::rollBack();
+            }
+        }
+        public function update(Request $request)
+        {   
+            if (!$request->ajax()) return redirect('/');
+            DB::beginTransaction();
+            try{
+                $mytime= Carbon::now('America/La_Paz');
+                $ingreso = Ingreso::findOrFail($request->id);
+                $ingreso->nro = 0;
+                $ingreso->idProveedor=$request->idProveedor;
+                $ingreso->fecha = $mytime->toDateTimeString();                
+                $ingreso->cantidad = $request->cantidad;
+                $ingreso->montoTotal = $request->montoTotal;
+                $ingreso->estado = '1';
+                $ingreso->save();
+    
+                $detalles = $request->data;//Array de detalles
+                //Recorro todos los elementos
+                $detalle = DetalleIngreso::where('idIngreso','=',$ingreso->id)->update(['estado'=>'0']);
+                foreach($detalles as $ep=>$det)
+                {
+                    $detalle_ingreso=DetalleIngreso::updateOrInsert(['idIngreso' =>$ingreso->id,'idLibro'=>$det['id']],
+                    ['cantidad'=>$det['cantidad'],'precio'=>$det['precio'],'estado'=>'1']);
                 } 
                 DB::commit();
             } catch (Exception $e){

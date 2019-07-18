@@ -20,6 +20,7 @@ Route::post('/ingreso/registrar', 'IngresoController@store');
 Route::put('/ingreso/actualizar', 'IngresoController@update');
 Route::put('/ingreso/desactivar', 'IngresoController@desactivar');
 Route::put('/ingreso/activar', 'IngresoController@activar');
+Route::get('/ingreso/listarDetalle', 'IngresoController@listarDetalle');
 
 Route::get('/entrega', 'EntregaController@index');
 Route::post('/entrega/registrar', 'EntregaController@store');
@@ -58,3 +59,4 @@ Route::post('/proveedor/registrar', 'ProveedorController@store');
 Route::put('/proveedor/actualizar', 'ProveedorController@update');
 Route::put('/proveedor/desactivar', 'ProveedorController@desactivar');
 Route::put('/proveedor/activar', 'ProveedorController@activar');
+Route::get('/proveedor/select', 'ProveedorController@select');

@@ -2490,16 +2490,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 
@@ -2510,7 +2500,6 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.component("v-select", vue_select__WEB
       ingreso_id: 0,
       idProveedor: 0,
       proveedor: "",
-      fecha: "",
       cantidad: 0,
       montoTotal: 0,
       arrayData: [],
@@ -2524,6 +2513,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.component("v-select", vue_select__WEB
       tipoAccion: 0,
       errorMostrar: 0,
       errorMostrarMsj: [],
+      selectedProveedor: null,
       pagination: {
         total: 0,
         current_page: 0,
@@ -2542,7 +2532,8 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.component("v-select", vue_select__WEB
       genero: "",
       grado: "",
       descripcion: "",
-      precio: 0
+      precio: 0,
+      sumaCantidad: 0
     };
   },
   computed: {
@@ -2594,7 +2585,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.component("v-select", vue_select__WEB
     selectProveedor: function selectProveedor(search, loading) {
       var me = this;
       loading(true);
-      var url = "/proveedor/selectProveedor?filtro=" + search;
+      var url = "/proveedor/select?buscar=" + search;
       axios.get(url).then(function (response) {
         var respuesta = response.data;
 
@@ -2672,9 +2663,9 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.component("v-select", vue_select__WEB
       me.listar(page, buscar, criterio);
     },
     encuentra: function encuentra(id) {
-      var sw = 0;
+      var sw = false;
 
-      for (var i = 0; i < this.arrayDetalle.length; i++) {
+      for (var i = 0; i < this.arrayDetalle.length && sw == false; i++) {
         if (this.arrayDetalle[i].id == id) {
           sw = true;
         }
@@ -2689,24 +2680,37 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.component("v-select", vue_select__WEB
     ingresoTotal: function ingresoTotal() {
       var me = this;
       me.montoTotal = 0;
+      me.sumaCantidad = 0;
 
       for (var i = 0; i < this.arrayDetalle.length; i++) {
         if (me.arrayDetalle[i].cantidad != 0 && me.arrayDetalle[i].cantidad != "") {
-          me.montoTotal = me.arrayDetalle[i].cantidad * me.arrayDetalle[i].precio + me.montoTotal;
-        }
-      }
+          // Suma Monto Total
+          me.montoTotal = me.arrayDetalle[i].cantidad * me.arrayDetalle[i].precio + me.montoTotal; // suma Cantidad
 
-      return me.montoTotal;
+          me.sumaCantidad = me.arrayDetalle[i].cantidad * 1 + me.sumaCantidad;
+        }
+      } // return me.montoTotal;
+
     },
     agregarDetalle: function agregarDetalle() {
       var me = this;
 
-      if (me.idProducto == 0) {} else {
-        if (me.encuentra(me.idProducto)) {
-          swal({
+      if (me.idLibro == 0) {
+        Swal.fire({
+          position: "center",
+          title: "Error !!",
+          type: "error",
+          showConfirmButton: false,
+          timer: 1000
+        });
+      } else {
+        if (me.encuentra(me.idLibro)) {
+          Swal.fire({
+            position: "center",
+            title: "El Producto ya se Encuentra Agregado",
             type: "error",
-            title: "Error...",
-            text: "Este Producto ya se Encuentra Agregado!"
+            showConfirmButton: false,
+            timer: 1000
           });
         } else {
           me.arrayDetalle.push({
@@ -2726,10 +2730,12 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.component("v-select", vue_select__WEB
       var me = this;
 
       if (me.encuentra(data["id"])) {
-        swal({
+        Swal.fire({
+          position: "center",
+          title: "El Producto ya se Encuentra Agregado",
           type: "error",
-          title: "Error...",
-          text: "Esta Cuenta ya se Encuentra Agregado!"
+          showConfirmButton: false,
+          timer: 1000
         });
       } else {
         me.arrayDetalle.push({
@@ -2762,7 +2768,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.component("v-select", vue_select__WEB
       axios.post("/ingreso/registrar", {
         idProveedor: this.idProveedor,
         fecha: this.fecha,
-        cantidad: this.cantidad,
+        cantidad: this.sumaCantidad,
         montoTotal: this.montoTotal,
         data: this.arrayDetalle
       }).then(function (response) {
@@ -2785,14 +2791,14 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.component("v-select", vue_select__WEB
       var me = this;
       axios.put("/ingreso/actualizar", {
         idProveedor: this.idProveedor,
-        fecha: this.fecha,
-        cantidad: this.cantidad,
+        cantidad: this.sumaCantidad,
         montoTotal: this.montoTotal,
         id: this.ingreso_id,
         data: this.arrayDetalle
       }).then(function (response) {
-        me.cerrarModal();
+        me.listado = 1;
         me.listar(1, "", "nombre");
+        me.limpiarRegistro();
       })["catch"](function (error) {
         console.log(error);
       });
@@ -2898,6 +2904,21 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.component("v-select", vue_select__WEB
       if (this.errorMostrarMsj.length) this.errorMostrar = 1;
       return this.errorMostrar;
     },
+    limpiarRegistro: function limpiarRegistro() {
+      this.proveedor = "";
+      this.selectedProveedor = null;
+      this.idProveedor = 0;
+      this.cantidad = 0;
+      this.montoTotal = 0;
+      this.descripcion = "";
+      this.genero = "";
+      this.grado = "";
+      this.idLibro = 0;
+      this.libro = "";
+      this.arrayProveedor = [];
+      this.arrayDetalle = [];
+      this.arrayProveedor = [];
+    },
     mostrarDetalle: function mostrarDetalle(modelo, accion) {
       var data = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
 
@@ -2908,13 +2929,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.component("v-select", vue_select__WEB
               case "registrar":
                 {
                   this.listado = 0;
-                  this.proveedor = "";
-                  this.idProveedor = 0;
-                  this.fecha = "";
-                  this.cantidad = 0;
-                  this.montoTotal = 0;
-                  this.descripcion = "";
-                  this.arrayDetalle = [];
+                  this.limpiarRegistro();
                   this.tipoAccion = 1;
                   break;
                 }
@@ -2925,11 +2940,15 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.component("v-select", vue_select__WEB
                   this.tipoAccion = 2;
                   this.ingreso_id = data["id"];
                   this.idProveedor = data["idProveedor"];
+                  this.selectedProveedor = {
+                    id: data["id"],
+                    nombre: data["proveedor"]
+                  };
                   this.proveedor = data["proveedor"];
-                  this.fecha = data["fecha"];
+                  this.sumaCantidad = data["cantidad"];
                   this.montoTotal = data["montoTotal"];
                   var me = this;
-                  var url = "/ingreso/listarIngresos?id=" + data["id"];
+                  var url = "/ingreso/listarDetalle?idIngreso=" + data["id"];
                   axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayDetalle = respuesta.detalles;
@@ -36294,34 +36313,6 @@ var render = function() {
                                     attrs: { type: "button" },
                                     on: {
                                       click: function($event) {
-                                        return _vm.verIngreso(data.id)
-                                      }
-                                    }
-                                  },
-                                  [_c("i", { staticClass: "icon-eye" })]
-                                ),
-                                _vm._v("  \n                  "),
-                                _c(
-                                  "button",
-                                  {
-                                    staticClass: "btn btn-info btn-sm",
-                                    attrs: { type: "button" },
-                                    on: {
-                                      click: function($event) {
-                                        return _vm.pdfIngreso(data.id)
-                                      }
-                                    }
-                                  },
-                                  [_c("i", { staticClass: "icon-doc" })]
-                                ),
-                                _vm._v("  \n                  "),
-                                _c(
-                                  "button",
-                                  {
-                                    staticClass: "btn btn-warning btn-sm",
-                                    attrs: { type: "button" },
-                                    on: {
-                                      click: function($event) {
                                         return _vm.mostrarDetalle(
                                           "ingreso",
                                           "actualizar",
@@ -36463,31 +36454,51 @@ var render = function() {
                 _c("div", { staticClass: "card-body" }, [
                   _c("div", { staticClass: "form-group row border" }, [
                     _c("div", { staticClass: "col-md-12" }, [
-                      _c("div", { staticClass: "form-group" }, [
-                        _vm._m(2),
-                        _vm._v(" "),
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.descripcion,
-                              expression: "descripcion"
+                      _c(
+                        "div",
+                        { staticClass: "form-group" },
+                        [
+                          _c("label", [
+                            _vm._v(
+                              "\n                  Proveedor\n                  "
+                            ),
+                            _c(
+                              "span",
+                              {
+                                directives: [
+                                  {
+                                    name: "show",
+                                    rawName: "v-show",
+                                    value: _vm.proveedor == "",
+                                    expression: "proveedor==''"
+                                  }
+                                ]
+                              },
+                              [_vm._v("(*Selecione)")]
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("v-select", {
+                            attrs: {
+                              label: "nombre",
+                              options: _vm.arrayProveedor,
+                              placeholder: "Buscar Proveedor.."
+                            },
+                            on: {
+                              search: _vm.selectProveedor,
+                              input: _vm.getDatosProveedor
+                            },
+                            model: {
+                              value: _vm.selectedProveedor,
+                              callback: function($$v) {
+                                _vm.selectedProveedor = $$v
+                              },
+                              expression: "selectedProveedor"
                             }
-                          ],
-                          staticClass: "form-control",
-                          attrs: { type: "text", placeholder: "Descripcion" },
-                          domProps: { value: _vm.descripcion },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.descripcion = $event.target.value
-                            }
-                          }
-                        })
-                      ])
+                          })
+                        ],
+                        1
+                      )
                     ]),
                     _vm._v(" "),
                     _c("div", { staticClass: "col-md-12" }, [
@@ -36649,7 +36660,7 @@ var render = function() {
                             "table table-bordered table-striped table-sm"
                         },
                         [
-                          _vm._m(3),
+                          _vm._m(2),
                           _vm._v(" "),
                           _vm.arrayDetalle.length
                             ? _c(
@@ -36697,6 +36708,10 @@ var render = function() {
                                           textContent: _vm._s(detalle.nombre)
                                         }
                                       }),
+                                      _vm._v(" "),
+                                      _c("td", [
+                                        _vm._v(_vm._s(detalle.genero))
+                                      ]),
                                       _vm._v(" "),
                                       _c("td", {
                                         domProps: {
@@ -36770,12 +36785,22 @@ var render = function() {
                                       _vm._v("Total")
                                     ]),
                                     _vm._v(" "),
-                                    _c("td", [_vm._v(_vm._s(_vm.montoTotal))])
+                                    _c("td", [
+                                      _vm._v(
+                                        "Cantidad: " + _vm._s(_vm.sumaCantidad)
+                                      )
+                                    ]),
+                                    _vm._v(" "),
+                                    _c("td", [
+                                      _vm._v(
+                                        "Monto: Bs. " + _vm._s(_vm.montoTotal)
+                                      )
+                                    ])
                                   ])
                                 ],
                                 2
                               )
-                            : _c("tbody", [_vm._m(4)])
+                            : _c("tbody", [_vm._m(3)])
                         ]
                       )
                     ])
@@ -36988,7 +37013,7 @@ var render = function() {
                       staticClass: "table table-bordered table-striped table-sm"
                     },
                     [
-                      _vm._m(5),
+                      _vm._m(4),
                       _vm._v(" "),
                       _c(
                         "tbody",
@@ -37123,18 +37148,11 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("label", { attrs: { for: "" } }, [
-      _vm._v("\n                  Por Concepto De\n                  "),
-      _c("br")
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
     return _c("thead", [
       _c("tr", [
         _c("th", [_vm._v("Opciones")]),
+        _vm._v(" "),
+        _c("td", [_vm._v("ID")]),
         _vm._v(" "),
         _c("th", [_vm._v("Nombre")]),
         _vm._v(" "),
@@ -37157,7 +37175,7 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("tr", [
-      _c("td", { attrs: { colspan: "8" } }, [
+      _c("td", { attrs: { colspan: "9" } }, [
         _vm._v("No hay Productos Agregados")
       ])
     ])
