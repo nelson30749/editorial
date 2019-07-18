@@ -45,6 +45,14 @@ class DepartamentoController extends Controller
             $departamento->estado = '1';
             $departamento->save();
         }
+        public function update(Request $request)
+        {   
+            if (!$request->ajax()) return redirect('/');
+            $departamento=Departamento::findOrFail($request->id);
+            $departamento->nombre = $request->nombre;
+            $departamento->estado = '1';
+            $departamento->save();
+        }
         public function desactivar(Request $request)
         {
             if(!$request->ajax()) return redirect('/');

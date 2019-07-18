@@ -51,6 +51,19 @@ class LibroController extends Controller
             $libro->estado = '1';
             $libro->save();
         }
+        public function update(Request $request)
+        {   
+            if (!$request->ajax()) return redirect('/');
+            $libro=Libro::findOrFail($request->id);
+            $libro->nombre = $request->nombre;
+            $libro->genero = $request->genero;
+            $libro->grado = $request->grado;
+            $libro->descripcion = $request->descripcion;
+            $libro->stock = $request->stock;
+            $libro->precio = $request->precio;
+            $libro->estado = '1';
+            $libro->save();
+        }
         public function desactivar(Request $request)
         {
             if(!$request->ajax()) return redirect('/');

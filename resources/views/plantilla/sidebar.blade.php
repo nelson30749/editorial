@@ -11,7 +11,7 @@
                     <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-bag"></i>Libros</a>
                     <ul class="nav-dropdown-items">
                         <li @click="menu=1" class="nav-item">
-                            <a class="nav-link" href="#"><i class="icon-bag"></i> Equipos</a>
+                            <a class="nav-link" href="#"><i class="icon-bag"></i> Libros</a>
                         </li>
                     </ul>
                 </li>

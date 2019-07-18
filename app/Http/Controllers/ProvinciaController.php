@@ -50,6 +50,15 @@ class ProvinciaController extends Controller
             $provincia->estado = '1';
             $provincia->save();
         }
+        public function update(Request $request)
+        {   
+            if (!$request->ajax()) return redirect('/');
+            $provincia=Provincia::findOrFail($request->id);
+            $provincia->idDpto = $request->idDpto;
+            $provincia->nombre = $request->nombre;
+            $provincia->estado = '1';
+            $provincia->save();
+        }
         public function desactivar(Request $request)
         {
             if(!$request->ajax()) return redirect('/');
