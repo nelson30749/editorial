@@ -15,6 +15,7 @@ class CreateEntregasTable extends Migration
     {
         Schema::create('entregas', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('nro');
             $table->unsignedinteger('idPromotor');
             $table->datatime('fecha');
             $table->string('comprovante',200);

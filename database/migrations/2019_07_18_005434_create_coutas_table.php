@@ -15,6 +15,7 @@ class CreateCoutasTable extends Migration
     {
         Schema::create('coutas', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('nro');
             $table->unsignedinteger('idPlan');
             $table->date('fecha');
             $table->decimal('monto',11 ,2);
