@@ -14,6 +14,10 @@
        </template>
 
        <template v-if="menu==3">
+       <proveedor></proveedor>      
+       </template>
+
+       <template v-if="menu==3">
        <entrega></entrega>      
        </template>
 
