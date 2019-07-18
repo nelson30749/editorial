@@ -1,2 +1,0 @@
-# editorial
-software 1
