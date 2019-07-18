@@ -9,18 +9,18 @@ class DepartamentoController extends Controller
 {
     public function index(Request $request)
     {
-        // if(!$request->ajax()) return redirect('/');
+        if(!$request->ajax()) return redirect('/');
         $buscar = $request->buscar;
         if($buscar=='')
         {
             $departamentos= Departamento::where('departamentos.estado','=','1')
-            ->orderBy('departamentos.id','desc')
+            ->orderBy('departamentos.id','asc')
             ->paginate(10);
         }
         else{
             $departamentos= Departamento::where('departamentos.nombre','like','%'.$buscar.'%')
             ->where('departamentos.estado','=','1')
-            ->orderBy('departamentos.id','desc')->paginate(10);
+            ->orderBy('departamentos.id','asc')->paginate(10);
             
         }
      

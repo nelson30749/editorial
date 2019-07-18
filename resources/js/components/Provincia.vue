@@ -8,8 +8,8 @@
         <!-- Ejemplo de tabla Listado -->
         <div class="card">
             <div class="card-header">
-                <i class="fa fa-align-justify"></i> Departamentos
-                <button type="button" @click="abrirModal('departamento','registrar')" class="btn btn-secondary">
+                <i class="fa fa-align-justify"></i> Provincia
+                <button type="button" @click="abrirModal('provincia','registrar')" class="btn btn-secondary">
                     <i class="icon-plus"></i>&nbsp;Nuevo
                 </button>
             </div>
@@ -28,18 +28,20 @@
                 </div>
                 <table class="table table-responsive-sm table-bordered table-striped table-sm">
                     <thead>
-                        <tr>
-                            <th>ID</th>               
+                        <tr>   
+                                                    
                             <th>Nombre</th>
+                            <th>Departamento</th>
                             <th>Estado</th>
-                            <th>Opciones</th>
-                          </tr>
+                            <th>Opciones</th>  
+                                                     
+                        </tr>
                     </thead>
                     <tbody>
                         <tr v-for="data in arrayData" :key="data.id">
                             
-                            <td>{{ data.id }}</td>
                             <td v-text="data.nombre"></td>
+                            <td v-text="data.nombreDepartamento"></td>
                             <td>
                                 <div v-if="data.estado">
                                    <span class="badge badge-success">Activo</span>
@@ -50,7 +52,7 @@
 
                             </td>
                             <td>
-                                <button type="button" @click="abrirModal('departamento','actualizar',data)" class="btn btn-warning btn-sm">
+                                <button type="button" @click="abrirModal('provincia','actualizar',data)" class="btn btn-warning btn-sm">
                                   <i class="icon-pencil"></i>
                                 </button> &nbsp;
 
@@ -141,8 +143,12 @@
 export default {
   data() {
     return {
-      departamento_id: 0,
+      provincia_id: 0,
+      departamento_id :0,
       nombre: '',
+      nombreDepartamento : '',
+      
+      
       arrayData: [],
       modal: 0,
       tituloModal: '',
@@ -195,11 +201,11 @@ export default {
   methods: {
     listar(page,buscar,criterio) {
       let me = this;
-      var url= '/departamento?page=' + page + '&buscar='+ buscar;
+      var url= '/provincia?page=' + page + '&buscar='+ buscar + '&criterio='+ criterio;
       axios.get(url).then(function(response) {
           // handle success
          var respuesta= response.data;
-         me.arrayData = respuesta.departamentos.data;
+         me.arrayData = respuesta.provincia.data;
          me.pagination= respuesta.pagination;
           //console.log(response);
         })
@@ -222,7 +228,7 @@ export default {
       let me = this;
 
       axios
-        .post("/departamento/registrar", {
+        .post("/provincia/registrar", {
           'nombre': this.nombre,
           // 'descripcion': this.descripcion
         })
@@ -248,10 +254,10 @@ export default {
       }
       let me = this;
       axios
-        .put("/departamento/actualizar", {
+        .put("/provincia/actualizar", {
           'nombre': this.nombre,
           // 'descripcion': this.descripcion,
-          'id': this.departamento_id
+          'id': this.provincia_id
         })
         .then(function(response) {
           me.cerrarModal();
@@ -276,7 +282,7 @@ export default {
       });
 
       swalWithBootstrapButtons({
-        title: "Esta seguro de desactivar esta categoria?",
+        title: "Esta seguro de desactivar esta provincia?",
         text: "You won't be able to revert this!",
         type: "warning",
         showCancelButton: true,
@@ -287,7 +293,7 @@ export default {
         if (result.value) {
           let me = this;
           axios
-            .put("/departamento/desactivar", {
+            .put("/provincia/desactivar", {
               id: id
             })
             .then(function(response) {
@@ -333,7 +339,7 @@ export default {
         if (result.value) {
           let me = this;
           axios
-            .put("/departamento/activar", {
+            .put("/provincia/activar", {
               id: id
             })
             .then(function(response) {
@@ -380,11 +386,11 @@ export default {
     },
     abrirModal(modelo, accion, data = []) {
       switch (modelo) {
-        case "departamento": {
+        case "provincia": {
           switch (accion) {
             case "registrar": {
               this.modal = 1;
-              this.tituloModal = "Registrar Departamento";
+              this.tituloModal = "Registrar Provincia";
               this.nombre = "";
               this.tipoAccion = 1;
               break;
@@ -394,7 +400,7 @@ export default {
               this.modal = 1;
               this.tituloModal = "Actualizar categoria";
               this.tipoAccion = 2;
-              this.departamento_id = data["id"];
+              this.provincia_id = data["id"];
               this.nombre = data["nombre"];
               break;
             }
