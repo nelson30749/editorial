@@ -21,7 +21,7 @@ class PromotorController extends Controller
         }
         else{
             $promotores= Promotor::where('promotores.nombre','like'.'%'.$buscar.'%')
-            ->where('promotores.apellido','like'.'%'.$buscar.'%')
+            ->where('promotores.apellido','like','%'.$buscar.'%')
             ->where('promotores.estado','=','1')
             ->orderBy('promotores.id','desc')->paginate(10);
             

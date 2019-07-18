@@ -18,7 +18,7 @@ class DepartamentoController extends Controller
             ->paginate(10);
         }
         else{
-            $departamentos= Departamento::where('departamentos.nombre','like'.'%'.$buscar.'%')
+            $departamentos= Departamento::where('departamentos.nombre','like','%'.$buscar.'%')
             ->where('departamentos.estado','=','1')
             ->orderBy('departamentos.id','desc')->paginate(10);
             

@@ -24,7 +24,7 @@ class IngresoController extends Controller
         else{
             $ingresos= Ingreso::join('proveedores','ingresos.idProveedor','=','proveedores.id')
             ->select('ingresos.id','nro','proveedores.nombre as proveedor','idProveedor','fecha','cantidad','montoTotal','ingresos.estado')
-            ->where('proveedores.nombre','like'.'%'.$buscar.'%')
+            ->where('proveedores.nombre','like','%'.$buscar.'%')
             ->where('ingresos.estado','=','1')
             ->orderBy('ingresos.id','desc')->paginate(10);
             

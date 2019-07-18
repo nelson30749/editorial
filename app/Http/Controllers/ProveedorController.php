@@ -24,8 +24,8 @@ class ProveedorController extends Controller
         ->paginate(10);
         }
         else{
-            $proveedores= Promotor::where('proveedores.nombre','like'.'%'.$buscar.'%')
-            ->where('apellido','like'.'%'.$buscar.'%')
+            $proveedores= Promotor::where('proveedores.nombre','like','%'.$buscar.'%')
+            ->where('apellido','like','%'.$buscar.'%')
             ->where('estado','=','1')
             ->orderBy('id','desc')->paginate(10);
         }

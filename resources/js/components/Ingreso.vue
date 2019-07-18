@@ -34,90 +34,86 @@
                     @keyup.enter="listar(1,buscar,criterio)"
                     class="form-control"
                     placeholder="Texto a buscar"
-                  >
+                  />
                   <button type="submit" @click="listar(1,buscar,criterio)" class="btn btn-primary">
                     <i class="fa fa-search"></i> Buscar
                   </button>
                 </div>
               </div>
             </div>
-            
-              <table class="table table-responsive-sm table-bordered table-striped table-sm">
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>N°</th>
-                    <th>Proveedor</th>
-                    <th>Fecha</th>
-                    <th>Cantidad</th>
-                    <th>Monto Total</th>
-                    <th>Estado</th>
-                    <th>Opciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="data in arrayData" :key="data.id">
-                    <td>
-                      <span class="badge badge-success" v-text="data.id"></span>
-                    </td>
-                    <td v-text="data.nro"></td>
-                    <td v-text="data.proveedor"></td>
-                    <td v-text="data.fecha"></td>
-                    <td v-text="data.cantidad"></td>
-                    <td v-text="data.montoTotal"></td>
-                    <td>
-                      <div v-if="data.estado">
-                        <span class="badge badge-success">Activo</span>
-                      </div>
-                      <div v-else>
-                        <span class="badge badge-danger">Desactivado</span>
-                      </div>
-                    </td>
-                    <td>
+
+            <table class="table table-responsive-sm table-bordered table-striped table-sm">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>N°</th>
+                  <th>Proveedor</th>
+                  <th>Fecha</th>
+                  <th>Cantidad</th>
+                  <th>Monto Total</th>
+                  <th>Estado</th>
+                  <th>Opciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="data in arrayData" :key="data.id">
+                  <td>
+                    <span class="badge badge-success" v-text="data.id"></span>
+                  </td>
+                  <td v-text="data.nro"></td>
+                  <td v-text="data.proveedor"></td>
+                  <td v-text="data.fecha"></td>
+                  <td v-text="data.cantidad"></td>
+                  <td v-text="data.montoTotal"></td>
+                  <td>
+                    <div v-if="data.estado">
+                      <span class="badge badge-success">Activo</span>
+                    </div>
+                    <div v-else>
+                      <span class="badge badge-danger">Desactivado</span>
+                    </div>
+                  </td>
+                  <td>
+                    <button
+                      type="button"
+                      @click="verIngreso(data.id)"
+                      class="btn btn-warning btn-sm"
+                    >
+                      <i class="icon-eye"></i>
+                    </button> &nbsp;
+                    <button
+                      type="button"
+                      @click="pdfIngreso(data.id)"
+                      class="btn btn-info btn-sm"
+                    >
+                      <i class="icon-doc"></i>
+                    </button> &nbsp;
+                    <button
+                      type="button"
+                      @click="mostrarDetalle('ingreso','actualizar',data)"
+                      class="btn btn-warning btn-sm"
+                    >
+                      <i class="icon-pencil"></i>
+                    </button> &nbsp;
+                    <template v-if="data.estado">
                       <button
                         type="button"
-                        @click="verIngreso(data.id)"
-                        class="btn btn-warning btn-sm"
+                        class="btn btn-danger btn-sm"
+                        @click="desactivar(data.id)"
                       >
-                        <i class="icon-eye"></i>
-                      </button> &nbsp;
-                      <button
-                        type="button"
-                        @click="pdfIngreso(data.id)"
-                        class="btn btn-info btn-sm"
-                      >
-                        <i class="icon-doc"></i>
-                      </button> &nbsp;
-                      <button
-                        type="button"
-                        @click="mostrarDetalle('ingreso','actualizar',data)"
-                        class="btn btn-warning btn-sm"
-                      >
-                        <i class="icon-pencil"></i>
-                      </button> &nbsp;
-                      <template v-if="data.estado">
-                        <button
-                          type="button"
-                          class="btn btn-danger btn-sm"
-                          @click="desactivar(data.id)"
-                        >
-                          <i class="icon-trash"></i>
-                        </button>
-                      </template>
-                      <template v-else>
-                        <button
-                          type="button"
-                          class="btn btn-info btn-sm"
-                          @click="activar(data.id)"
-                        >
-                          <i class="icon-check"></i>
-                        </button>
-                      </template>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-          
+                        <i class="icon-trash"></i>
+                      </button>
+                    </template>
+                    <template v-else>
+                      <button type="button" class="btn btn-info btn-sm" @click="activar(data.id)">
+                        <i class="icon-check"></i>
+                      </button>
+                    </template>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
             <nav>
               <ul class="pagination">
                 <li class="page-item" v-if="pagination.current_page > 1">
@@ -157,19 +153,18 @@
         <template v-else-if="listado==0">
           <div class="card-body">
             <div class="form-group row border">
-
               <div class="col-md-12">
                 <div class="form-group">
                   <label for>
                     Por Concepto De
-                    <br>
+                    <br />
                   </label>
                   <input
                     type="text"
                     v-model="descripcion"
                     class="form-control"
                     placeholder="Descripcion"
-                  >
+                  />
                 </div>
               </div>
 
@@ -181,126 +176,103 @@
                 </div>
               </div>
             </div>
-              <div class="form-group row border">
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label>
-                      Libro
-                      <span v-show="libro==''">(*Selecione)</span>
-                    </label>
-                    <v-select
-                      :on-search="selectLibro"
-                      label="nombre"
-                      :options="arrayLibro"
-                      placeholder="Buscar Libro..."
-                      :onChange="getDatosLibro"
-                    ></v-select>
-                  </div>
-                </div>
-                <div class="col-md-0">
-                  <div class="form-group">
-                    <button @click="abrirModal()" class="btn btn-success form-control btnagregar">
-                      <i class="icon-plus"></i>
-                      <i class="icon-plus"></i>
-                      <i class="icon-plus"></i>
-                    </button>
-                  </div>
-                </div>
-                <div class="col-md-2">
-                  <div class="form-group">
-                    <label for>Cantidad</label>
-                    <input type="number" value="0" class="form-control" v-model.number="cantidad">
-                  </div>
-                </div>
-               
-                <div class="col-md-2">
-                  <div class="form-group">
-                    <button
-                      @click="agregarDetalle()"
-                      class="btn btn-success form-control btnagregar"
-                    >
-                      <i class="icon-plus">Agregar</i>
-                    </button>
-                  </div>
+            <div class="form-group row border">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>
+                    Libro
+                    <span v-show="libro==''">(*Selecione)</span>
+                  </label>
+                  <v-select
+                    @search="selectLibro"
+                    label="nombre"
+                    :options="arrayLibro"
+                    placeholder="Buscar Libro..."
+                    @input="getDatosLibro"
+                  ></v-select>
                 </div>
               </div>
-              <div class="form-group row border">
-                <div class="table-responsive col-md-12">
-                  <table class="table table-bordered table-striped table-sm">
-                    <thead>
-                      <tr>
-                        <th>Opciones</th>
-                        <th>ID</th>
-                        <th>Cuenta</th>
-                        <th>Debe</th>
-                        <th>Haber</th>
-                        <th>Descripcion</th>
-                      </tr>
-                    </thead>
-                    <tbody v-if="(arrayDetalle.length)">
-                      <tr v-for="(detalle,index) in arrayDetalle" :key="detalle.idCuenta">
-                        <td>
-                          <button
-                            @click="eliminarDetalle(index)"
-                            type="button"
-                            class="btn btn-danger btn-sm"
-                          >
-                            <i class="icon-close"></i>
-                          </button>
-                        </td>
-                        <td>
-                          <span class="badge badge-success" v-text="detalle.idCuenta"></span>
-                        </td>
+              <div class="col-md-0">
+                <div class="form-group">
+                  <button @click="abrirModal()" class="btn btn-success form-control btnagregar">
+                    <i class="icon-plus"></i>
+                    <i class="icon-plus"></i>
+                    <i class="icon-plus"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="form-group">
+                  <label for>Cantidad</label>
+                  <input type="number" value="0" class="form-control" v-model="cantidad" />
+                </div>
+              </div>
 
-                        <td v-text="detalle.nombre"></td>
-                        <td>
-                          <input
-                            type="number"
-                            @keyup="ventaTotal()"
-                            v-number="0"
-                            v-model.number="detalle.debe"
-                            class="form-control"
-                          >
-                        </td>
-                        <td>
-                          <input
-                            type="number"
-                            @keyup="ventaTotal()"
-                            value="0"
-                            v-model.number="detalle.haber"
-                            class="form-control"
-                          >
-                        </td>
-                        <td>
-                          <input
-                            type="text"
-                            v-model="detalle.descripcionD"
-                            class="form-control"
-                            placeholder="Descripcion"
-                          >
-                        </td>
-                       
-                      </tr>
-                      <tr>
-                        <td colspan="5">Total</td>
-                        <td>
-                          <input
-                            type="number"
-                            value="0"
-                            v-model.number="montoIE"
-                            class="form-control"
-                          >
-                        </td>
-                      </tr>
-                    </tbody>
-                    <tbody v-else>
-                      <tr>
-                        <td colspan="6">No hay Productos Agregados</td>
-                      </tr>
-                    </tbody>
-                  </table>
+              <div class="col-md-2">
+                <div class="form-group">
+                  <button @click="agregarDetalle()" class="btn btn-success form-control btnagregar">
+                    <i class="icon-plus">Agregar</i>
+                  </button>
                 </div>
               </div>
+            </div>
+            <div class="form-group row border">
+              <div class="table-responsive col-md-12">
+                <table class="table table-bordered table-striped table-sm">
+                  <thead>
+                    <tr>
+                      <th>Opciones</th>
+                      <th>Nombre</th>
+                      <th>Genero</th>
+                      <th>Grado</th>
+                      <th>Descripcion</th>
+                      <th>Precio</th>
+                      <th>Cantidad</th>
+                      <th>SubTotal</th>
+                    </tr>
+                  </thead>
+                  <tbody v-if="(arrayDetalle.length)">
+                    <tr v-for="(detalle,index) in arrayDetalle" :key="detalle.id">
+                      <td>
+                        <button
+                          @click="eliminarDetalle(index)"
+                          type="button"
+                          class="btn btn-danger btn-sm"
+                        >
+                          <i class="icon-close"></i>
+                        </button>
+                      </td>
+                      <td>
+                        <span class="badge badge-success" v-text="detalle.id"></span>
+                      </td>
+
+                      <td v-text="detalle.nombre"></td>
+                      <td v-text="detalle.grado"></td>
+                      <td>{{ detalle.descripcion }}</td>
+                      <td>{{ detalle.precio }}</td>
+                      <td>
+                        <input
+                          type="number"
+                          @keyup.enter="ingresoTotal()"
+                          v-model="detalle.cantidad"
+                          class="form-control"
+                        />
+                      </td>
+                      <td>{{ (detalle.cantidad*detalle.precio) }}</td>
+                    </tr>
+                    <tr>
+                      <td colspan="7">Total</td>
+                      <td>{{ montoTotal }}</td>
+                    </tr>
+                  </tbody>
+                  <tbody v-else>
+                    <tr>
+                      <td colspan="8">No hay Productos Agregados</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
 
             <!---listado formula-->
             <div class="form-group row">
@@ -316,7 +288,7 @@
                   type="button"
                   v-if="tipoAccion==2"
                   class="btn btn-primary"
-                  @click="actualizar();eliminarDetalleVenta();insertarDetalle()"
+                  @click="actualizar();"
                 >Actualizar</button>
               </div>
             </div>
@@ -350,9 +322,9 @@
                 <div class="input-group">
                   <select class="form-control col-md-3" v-model="criterioP">
                     <option value="nombre">Nombre</option>
-                  <option value="genero">Genero</option>
-                  <option value="grado">Grado</option>
-                  <option value="descripcion">Descripcion</option>
+                    <option value="genero">Genero</option>
+                    <option value="grado">Grado</option>
+                    <option value="descripcion">Descripcion</option>
                   </select>
                   <input
                     type="text"
@@ -360,7 +332,7 @@
                     @keyup="listarLibro(buscarP,criterioP)"
                     class="form-control"
                     placeholder="Buscar Producto"
-                  >
+                  />
                   <button
                     type="submit"
                     @click="listarLibro(buscarP,criterioP)"
@@ -377,33 +349,33 @@
                   <tr>
                     <th>Opciones</th>
                     <th>Nombre</th>
-                <th>Genero</th>
-                <th>Grado</th>
-                <th>Descripcion</th>
-                <th>Stock</th>
-                <th>Precio</th>
+                    <th>Genero</th>
+                    <th>Grado</th>
+                    <th>Descripcion</th>
+                    <th>Stock</th>
+                    <th>Precio</th>
                     <th>Estado</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="libro in arrayLibro" :key="libro.id">
+                  <tr v-for="libros in arrayLibro" :key="libros.id">
                     <td>
                       <button
                         type="button"
-                        @click="agregarDetalleModal(libro)"
+                        @click="agregarDetalleModal(libros)"
                         class="btn btn-success btn-sm"
                       >
                         <i class="icon-check"></i>
                       </button>
                     </td>
-                    <td v-text="libro.nombre"></td>
-                    <td v-text="libro.genero"></td>
-                    <td v-text="libro.grado"></td>
-                    <td v-text="libro.descripcion"></td>
-                    <td v-text="libro.stock"></td>
-                    <td v-text="libro.precio"></td>
+                    <td v-text="libros.nombre"></td>
+                    <td v-text="libros.genero"></td>
+                    <td v-text="libros.grado"></td>
+                    <td v-text="libros.descripcion"></td>
+                    <td v-text="libros.stock"></td>
+                    <td v-text="libros.precio"></td>
                     <td>
-                      <div v-if="libro.estado">
+                      <div v-if="libros.estado">
                         <span class="badge badge-success">Activo</span>
                       </div>
                       <div v-else>
@@ -438,15 +410,15 @@ export default {
     return {
       ingreso_id: 0,
       idProveedor: 0,
-      proveedor:'',
+      proveedor: "",
       fecha: "",
-      cantidad:0,
+      cantidad: 0,
       montoTotal: 0,
       arrayData: [],
-      arrayDataT:[],
+      arrayDataT: [],
       arrayDetalle: [],
       arrayLibro: [],
-      arrayProveedor:[],
+      arrayProveedor: [],
       listado: 1,
       modal: 0,
       tituloModal: "",
@@ -466,16 +438,15 @@ export default {
       criterioP: "nombre",
       buscarP: "",
       buscar: "",
-      libro:'',
-      idLibro:0,
-      genero:'',
-      grado:'',
-      descripcion:'',
-      precio:0,
-      selectedLibro:null
+      libro: "",
+      idLibro: 0,
+      genero: "",
+      grado: "",
+      descripcion: "",
+      precio: 0
     };
-  },
-  computed: {
+    },
+    computed: {
     isActived: function() {
       return this.pagination.current_page;
     },
@@ -503,8 +474,7 @@ export default {
   methods: {
     listar(page, buscar, criterio) {
       let me = this;
-      var url =
-        "/ingreso?page=" + page + "&buscar=" + buscar ;
+      var url = "/ingreso?page=" + page + "&buscar=" + buscar;
       axios
         .get(url)
         .then(function(response) {
@@ -517,7 +487,9 @@ export default {
         });
     },
     pdfVenta(id) {
-      window.open("http://localhost:8000/venta/pdf/venta_" + id + "," + "_blank");
+      window.open(
+        "http://localhost:8000/venta/pdf/venta_" + id + "," + "_blank"
+      );
     },
     selectProveedor(search, loading) {
       let me = this;
@@ -541,10 +513,10 @@ export default {
       me.idProveedor = val1.id;
       me.proveedor = val1.nombre;
     },
-        selectLibro(search, loading) {
+    selectLibro(search, loading) {
       let me = this;
       loading(true);
-      var url = "/libro/select?filtro=" + search;
+      var url = "/libro/select?buscar=" + search;
       axios
         .get(url)
         .then(function(response) {
@@ -561,11 +533,11 @@ export default {
       let me = this;
       me.loading = true;
       me.idLibro = val1.id;
-      me.nombre = val1.nombre;
-      me.genero=val1.genero;
-      me.grado=val1.grado;
-      me.descripcion=val1.descripcion;
-      
+      me.libro = val1.nombre;
+      me.genero = val1.genero;
+      me.grado = val1.grado;
+      me.descripcion = val1.descripcion;
+      me.precio = val1.precio;
     },
     verIngreso(id) {
       let me = this;
@@ -623,15 +595,20 @@ export default {
     },
     ingresoTotal() {
       let me = this;
-      me.montoVenta = 0;
+      me.montoTotal = 0;
       for (var i = 0; i < this.arrayDetalle.length; i++) {
-        me.montoVenta =
-          this.arrayDetalle[i].cantidad * this.arrayDetalle[i].precio +
-          me.montoVenta;
+        if (
+          me.arrayDetalle[i].cantidad != 0 &&
+          me.arrayDetalle[i].cantidad != ""
+        ) {
+          me.montoTotal =
+            me.arrayDetalle[i].cantidad * me.arrayDetalle[i].precio +
+            me.montoTotal;
+        }
       }
-      return me.montoVenta;
+      return me.montoTotal;
     },
-   
+
     agregarDetalle() {
       let me = this;
       if (me.idProducto == 0) {
@@ -645,12 +622,12 @@ export default {
         } else {
           me.arrayDetalle.push({
             id: me.idLibro,
-            nombre: me.nombre,
+            nombre: me.libro,
             genero: me.genero,
-            grado:me.grado,
+            grado: me.grado,
             descripcion: me.descripcion,
             precio: me.precio,
-            cantidad:me.cantidad
+            cantidad: me.cantidad
           });
         }
       }
@@ -669,16 +646,15 @@ export default {
           nombre: data["nombre"],
           genero: data["genero"],
           grado: data["grado"],
-          descripcion:data["descripcion"],
-          precio:data["precio"],
-          cantidad:1
+          descripcion: data["descripcion"],
+          precio: data["precio"],
+          cantidad: 1
         });
       }
     },
     listarLibro(buscar, criterio) {
       let me = this;
-      var url =
-        "/libro/listar?buscar=" + buscar + "&criterio=" + criterio;
+      var url = "/libro/listar?buscar=" + buscar + "&criterio=" + criterio;
       axios
         .get(url)
         .then(function(response) {
@@ -699,8 +675,8 @@ export default {
         .post("/ingreso/registrar", {
           idProveedor: this.idProveedor,
           fecha: this.fecha,
-          cantidad:this.cantidad,
-          montoTotal:this.montoTotal,
+          cantidad: this.cantidad,
+          montoTotal: this.montoTotal,
           data: this.arrayDetalle
         })
         .then(function(response) {
@@ -709,7 +685,7 @@ export default {
           me.idProveedor = 0;
           me.montoTotal = 0;
           me.fecha = "";
-          me.cantidad=0;
+          me.cantidad = 0;
           me.arrayDetalle = [];
         })
         .catch(function(error) {
@@ -726,8 +702,8 @@ export default {
         .put("/ingreso/actualizar", {
           idProveedor: this.idProveedor,
           fecha: this.fecha,
-          cantidad:this.cantidad,
-          montoTotal:this.montoTotal,
+          cantidad: this.cantidad,
+          montoTotal: this.montoTotal,
           id: this.ingreso_id,
           data: this.arrayDetalle
         })
@@ -740,8 +716,7 @@ export default {
         });
     },
 
-    
-  desactivar(id) {
+    desactivar(id) {
       const swalWithBootstrapButtons = Swal.mixin({
         customClass: {
           confirmButton: "btn btn-success",
@@ -873,9 +848,9 @@ export default {
               this.listado = 0;
               this.tipoAccion = 2;
               this.ingreso_id = data["id"];
-              this.idProveedor=data["idProveedor"];
+              this.idProveedor = data["idProveedor"];
               this.proveedor = data["proveedor"];
-              this.fecha=data["fecha"];
+              this.fecha = data["fecha"];
               this.montoTotal = data["montoTotal"];
 
               let me = this;

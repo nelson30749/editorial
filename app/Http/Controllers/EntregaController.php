@@ -25,8 +25,8 @@ class EntregaController extends Controller
         else{
             $entregas= Entrega::join('promotores','entregas.idPromotor','=','promotores.id')
             ->select('entregas.id','nro',DB::raw("concat(promotores.nombre,' ',promotores.apellido) promotor"),'idPromotor','fecha','comprobante','cantidad','montoTotal','entregas.estado')
-            ->where('promotores.nombre','like'.'%'.$buscar.'%')
-            ->where('promotores.apellido','like'.'%'.$buscar.'%')
+            ->where('promotores.nombre','like','%'.$buscar.'%')
+            ->where('promotores.apellido','like','%'.$buscar.'%')
             ->where('entregas.estado','=','1')
             ->orderBy('entregas.id','desc')->paginate(10);
             

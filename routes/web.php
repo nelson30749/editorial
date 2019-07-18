@@ -51,6 +51,7 @@ Route::put('/libro/actualizar', 'LibroController@update');
 Route::put('/libro/desactivar', 'LibroController@desactivar');
 Route::put('/libro/activar', 'LibroController@activar');
 Route::get('/libro/listar', 'LibroController@listar');
+Route::get('/libro/select', 'LibroController@select');
 
 Route::get('/proveedor', 'ProveedorController@index');
 Route::post('/proveedor/registrar', 'ProveedorController@store');

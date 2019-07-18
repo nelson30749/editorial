@@ -22,7 +22,7 @@ class ProvinciaController extends Controller
         else{
             $provincias= Provincia::join('departamentos','provincias.idDpto','=','departamentos.id')
             ->select('provincias.id','idDpto','departamentos.nombre as departamento','provincias.nombre as provincia','provincias.estado')
-            ->where('provincias.nombre','like'.'%'.$buscar.'%')
+            ->where('provincias.nombre','like','%'.$buscar.'%')
             ->where('provincias.estado','=','1')
             ->orderBy('provincias.id','desc')->paginate(10);
             

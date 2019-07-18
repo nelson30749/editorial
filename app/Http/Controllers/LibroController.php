@@ -19,7 +19,7 @@ class LibroController extends Controller
             ->paginate(10);
         }
         else{
-            $libros= Libro::where('libros.'.$criterio,'like'.'%'.$buscar.'%')
+            $libros= Libro::where('libros.'.$criterio,'like','%'.$buscar.'%')
             ->where('libros.estado','=','1')
             ->orderBy('libros.id','desc')->paginate(10);
             
@@ -46,18 +46,32 @@ class LibroController extends Controller
         {
             $libros= Libro::where('libros.estado','=','1')
             ->orderBy('libros.id','desc')
+            ->limit(10)
             ->get();
         }
         else{
-            $libros= Libro::where('libros.'.$criterio,'like'.'%'.$buscar.'%')
+            $libros= Libro::where('libros.'.$criterio,'like','%'.$buscar.'%')
             ->where('libros.estado','=','1')
-            ->orderBy('libros.id','desc')->get();
+            ->orderBy('libros.id','desc')
+            ->limit(10)
+            ->get();
             
         }
      
         return ['libros' => $libros];
     }
-
+    public function select(Request $request)
+    {
+        // if(!$request->ajax()) return redirect('/');
+        $buscar = $request->buscar;
+        $libros= Libro::where('libros.nombre','like','%'.$buscar.'%')
+        ->where('libros.estado','=','1')
+        ->orderBy('libros.id','desc')
+        ->limit(10)
+        ->get();
+     
+        return ['libros' => $libros];
+    }
     public function store(Request $request)
         {   
             if (!$request->ajax()) return redirect('/');
