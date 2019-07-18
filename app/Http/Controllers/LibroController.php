@@ -37,6 +37,26 @@ class LibroController extends Controller
             'libros' => $libros
         ];
     }
+    public function listar(Request $request)
+    {
+        // if(!$request->ajax()) return redirect('/');
+        $buscar = $request->buscar;
+        $criterio=$request->criterio;
+        if($buscar=='')
+        {
+            $libros= Libro::where('libros.estado','=','1')
+            ->orderBy('libros.id','desc')
+            ->get();
+        }
+        else{
+            $libros= Libro::where('libros.'.$criterio,'like'.'%'.$buscar.'%')
+            ->where('libros.estado','=','1')
+            ->orderBy('libros.id','desc')->get();
+            
+        }
+     
+        return ['libros' => $libros];
+    }
 
     public function store(Request $request)
         {   

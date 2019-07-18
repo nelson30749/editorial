@@ -28,6 +28,8 @@ window.Vue = require('vue');
  */
 Vue.component('proveedor', require('./components/Proveedor.vue').default);
 Vue.component('departamento', require('./components/Departamento.vue').default);
+Vue.component('libro', require('./components/Libro.vue').default);
+Vue.component('ingreso', require('./components/Ingreso.vue').default);
 
 const app = new Vue({
     el: '#app',
