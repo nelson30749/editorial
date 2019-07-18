@@ -21,7 +21,7 @@ class CreatePromotoresTable extends Migration
             $table->string('direccion' ,80);
             $table->integer('telefono');
             $table->string('email' ,80);
-            $tabler->boolean('estado')->default(1);
+            $table->boolean('estado')->default(1);
             // $table->timestamps();
         });
     }

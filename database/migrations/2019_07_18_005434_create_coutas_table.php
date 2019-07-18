@@ -15,14 +15,14 @@ class CreateCoutasTable extends Migration
     {
         Schema::create('coutas', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('nro');
             $table->unsignedinteger('idPlan');
+            $table->integer('nro');            
             $table->date('fecha');
             $table->decimal('monto',11 ,2);
-            $tabler->boolean('estado')->default(1);
+            $table->boolean('estado')->default(1);
+            // $table->primary(['id','idPlan']);
+            // $table->foreign('idCuota')->references('id')->on('coutas');
             $table->foreign('idPlan')->references('id')->on('plan_pagos');
-            
-
             // $table->timestamps();
         });
     }

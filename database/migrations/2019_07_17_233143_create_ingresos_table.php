@@ -17,7 +17,7 @@ class CreateIngresosTable extends Migration
             $table->increments('id');
             $table->integer('nro');
             $table->unsignedinteger('idProveedor');
-            $table->dateTime('fecha');
+            $table->datetime('fecha');
             $table->integer('cantidad');
             $table->decimal('montoTotal',20,2);
             $table->boolean('estado')->default(1);  

@@ -17,8 +17,8 @@ class CreateEntregasTable extends Migration
             $table->increments('id');
             $table->integer('nro');
             $table->unsignedinteger('idPromotor');
-            $table->datatime('fecha');
-            $table->string('comprovante',200);
+            $table->datetime('fecha');
+            $table->string('comprobante',200);
             $table->integer('cantidad');
             $table->decimal('montoTotal');
             $table->boolean('estado')->default(1);  

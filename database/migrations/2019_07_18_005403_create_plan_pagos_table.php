@@ -21,7 +21,7 @@ class CreatePlanPagosTable extends Migration
             $table->date('fechaFin');
             $table->string('pago', 50);
             $table->decimal('montoTotal' ,20 ,2);
-            $tabler->boolean('estado')->default(1);
+            $table->boolean('estado')->default(1);
             $table->foreign('idEntrega')->references('id')->on('entregas');
             // $table->timestamps();
         });
