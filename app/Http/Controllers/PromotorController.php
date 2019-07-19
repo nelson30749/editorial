@@ -19,8 +19,6 @@ class PromotorController extends Controller
             ->where('promotores.estado','=','1')
             ->orderBy('promotores.id','desc')->paginate(10);
             
-        
-     
         return [
             'pagination' => [
                 'total'        => $promotores->total(),
@@ -46,7 +44,19 @@ class PromotorController extends Controller
      
         return ['detalles' => $detalles];
     }
-
+    public function select(Request $request)
+    {
+        // if(!$request->ajax()) return redirect('/');
+        $buscar = $request->buscar;
+        $promotores= Promotor::select('id',DB::raw("concat(promotores.nombre,' ',promotores.apellido) as promotor"))
+        ->where('promotores.nombre','like','%'.$buscar.'%')
+        ->where('promotores.estado','=','1')
+        ->orderBy('promotores.id','desc')
+        ->limit(10)
+        ->get();
+        
+        return ['promotores' => $promotores];
+    }
     public function store(Request $request)
         {   
             if (!$request->ajax()) return redirect('/');

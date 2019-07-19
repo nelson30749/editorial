@@ -32,6 +32,7 @@ Vue.component('libro', require('./components/Libro.vue').default);
 Vue.component('ingreso', require('./components/Ingreso.vue').default);
 Vue.component('provincia', require('./components/Provincia.vue').default);
 Vue.component('promotor', require('./components/Promotor.vue').default);
+Vue.component('entrega', require('./components/Entrega.vue').default);
 
 const app = new Vue({
     el: '#app',

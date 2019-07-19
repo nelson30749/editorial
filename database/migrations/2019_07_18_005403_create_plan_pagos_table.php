@@ -16,7 +16,7 @@ class CreatePlanPagosTable extends Migration
         Schema::create('plan_pagos', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedinteger('idEntrega');
-            $table->date('fecha');
+            $table->datetime('fecha');
             $table->date('fechaInicio');
             $table->date('fechaFin');
             $table->string('pago', 50);

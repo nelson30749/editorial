@@ -27,6 +27,7 @@ Route::post('/entrega/registrar', 'EntregaController@store');
 Route::put('/entrega/actualizar', 'EntregaController@update');
 Route::put('/entrega/desactivar', 'EntregaController@desactivar');
 Route::put('/entrega/activar', 'EntregaController@activar');
+Route::get('/entrega/listarDetalle', 'EntregaController@listarDetalle');
 
 Route::get('/promotor', 'PromotorController@index');
 Route::post('/promotor/registrar', 'PromotorController@store');
@@ -34,6 +35,7 @@ Route::put('/promotor/actualizar', 'PromotorController@update');
 Route::put('/promotor/desactivar', 'PromotorController@desactivar');
 Route::put('/promotor/activar', 'PromotorController@activar');
 Route::get('/promotor/listarDetalle', 'PromotorController@listarDetalle');
+Route::get('/promotor/select', 'PromotorController@select');
 
 Route::get('/departamento', 'DepartamentoController@index');
 Route::post('/departamento/registrar', 'DepartamentoController@store');

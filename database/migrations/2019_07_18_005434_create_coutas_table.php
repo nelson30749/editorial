@@ -17,7 +17,7 @@ class CreateCoutasTable extends Migration
             $table->increments('id');
             $table->unsignedinteger('idPlan');
             $table->integer('nro');            
-            $table->date('fecha');
+            $table->datetime('fecha');
             $table->decimal('monto',11 ,2);
             $table->boolean('estado')->default(1);
             // $table->primary(['id','idPlan']);

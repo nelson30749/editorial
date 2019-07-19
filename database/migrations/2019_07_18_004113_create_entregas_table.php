@@ -21,6 +21,7 @@ class CreateEntregasTable extends Migration
             $table->string('comprobante',200);
             $table->integer('cantidad');
             $table->decimal('montoTotal');
+            $table->integer('pago');
             $table->boolean('estado')->default(1);  
             $table->foreign('idPromotor')->references('id')->on('promotores');
             // $table->timestamps();

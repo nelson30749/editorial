@@ -10,10 +10,10 @@
       <!-- Ejemplo de tabla Listado -->
       <div class="card">
         <div class="card-header">
-          <i class="fa fa-align-justify"></i> Ingreso
+          <i class="fa fa-align-justify"></i> Entrega
           <button
             type="button"
-            @click="mostrarDetalle('ingreso','registrar')"
+            @click="mostrarDetalle('entrega','registrar')"
             class="btn btn-secondary"
           >
             <i class="icon-plus"></i>&nbsp;Nuevo
@@ -26,7 +26,7 @@
               <div class="col-md-6">
                 <div class="input-group">
                   <select class="form-control col-md-5" v-model="criterio">
-                    <option value="proveedores">Proveedores</option>
+                    <option value="promotores">Promotores</option>
                   </select>
                   <input
                     type="text"
@@ -47,10 +47,12 @@
                 <tr>
                   <th>ID</th>
                   <th>N°</th>
-                  <th>Proveedor</th>
+                  <th>Promotor</th>
                   <th>Fecha</th>
+                  <th>Comprobante</th>
                   <th>Cantidad</th>
                   <th>Monto Total</th>
+                  <th>Entrega</th>
                   <th>Estado</th>
                   <th>Opciones</th>
                 </tr>
@@ -61,10 +63,19 @@
                     <span class="badge badge-success" v-text="data.id"></span>
                   </td>
                   <td v-text="data.nro"></td>
-                  <td v-text="data.proveedor"></td>
+                  <td v-text="data.promotor"></td>
                   <td v-text="data.fecha"></td>
+                  <td v-text="data.comprobante"></td>
                   <td v-text="data.cantidad"></td>
                   <td v-text="data.montoTotal"></td>
+                  <td>
+                      <div v-if="data.pago">
+                        <span class="badge badge-success">Contado</span>
+                      </div>
+                      <div v-else>
+                        <span class="badge badge-success">Credito</span>
+                      </div>
+                    </td>
                   <td>
                     <div v-if="data.estado">
                       <span class="badge badge-success">Activo</span>
@@ -76,7 +87,7 @@
                   <td>
                     <button
                       type="button"
-                      @click="mostrarDetalle('ingreso','actualizar',data)"
+                      @click="mostrarDetalle('entrega','actualizar',data)"
                       class="btn btn-warning btn-sm"
                     >
                       <i class="icon-pencil"></i>
@@ -139,20 +150,44 @@
         <template v-else-if="listado==0">
           <div class="card-body">
             <div class="form-group row border">
-              <div class="col-md-12">
+              <div class="col-md-6">
                 <div class="form-group">
                   <label>
                     Proveedor
-                    <span v-show="proveedor==''">(*Selecione)</span>
+                    <span v-show="promotor==''">(*Selecione)</span>
                   </label>
                   <v-select
-                    v-model="selectedProveedor"
-                    @search="selectProveedor"
-                    label="nombre"
-                    :options="arrayProveedor"
-                    placeholder="Buscar Proveedor.."
-                    @input="getDatosProveedor"
+                    v-model="selectedPromotor"
+                    @search="selectPromotor"
+                    label="promotor"
+                    :options="arrayPromotor"
+                    placeholder="Buscar Promotor.."
+                    @input="getDatosPromotor"
                   ></v-select>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for>Entrega </label>
+                  <select class="form-control col-md-12" v-model="pago">
+                    <option value=2 >Seleccione</option>
+                    <option value=1>Contado</option>
+                    <option value=0>Credito</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label for>
+                    Comprobante
+                    <br>
+                  </label>
+                  <input
+                    type="text"
+                    v-model="comprobante"
+                    class="form-control"
+                    placeholder="Comprobante.."
+                  >
                 </div>
               </div>
               <div class="col-md-12">
@@ -163,6 +198,71 @@
                 </div>
               </div>
             </div>
+            <template v-if="pago==0">
+               <div class="form-group row border">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>
+                    Fecha
+                    <span v-show="fechaInicio==''">(*Selecione)</span>
+                  </label>
+                  <input type="date" class="form-control" v-model="fechaInicio">
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>
+                    Fecha
+                    <span v-show="fechaFin==''">(*Selecione)</span>
+                  </label>
+                  <input type="date" class="form-control" v-model="fechaFin">
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>
+                    Monto Pago
+                  </label>
+                  <input type="number" disabled class="form-control" v-model="montoTotal">
+                </div>
+              </div>
+              <div class="col-md-6" v-if="couta">
+                <div class="form-group">
+                  <button @click="cambiarCouta(false)" class="btn btn-success btnagregar">
+                    <i class="icon-plus">Agregar Couta</i>
+                  </button>
+                </div>
+              </div>
+              <div class="col-md-6" v-else>
+                <div class="form-group">
+                  <button @click="cambiarCouta(true)" class="btn btn-danger btnagregar">
+                    <i class="icon-close">Quitar Couta</i>
+                  </button>
+                </div>
+              </div>
+              <div class="col-md-12" v-if="couta==false">
+                <div class="form-group">
+                  <label for>
+                    Monto Couta
+                    <br>
+                  </label>
+                  <input
+                    type="number"
+                    v-model="montoCouta"
+                    class="form-control"
+                    placeholder="Monto de la Couta.."
+                  >
+                </div>
+              </div>
+              <div class="col-md-12">
+                <div v-show="errorMostrar" class="form-group row div-error">
+                  <div class="text-center text-error">
+                    <div v-for="error in errorMostrarMsj" :key="error" v-text="error"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            </template>
             <div class="form-group row border">
               <div class="col-md-6">
                 <div class="form-group">
@@ -181,7 +281,7 @@
               </div>
               <div class="col-md-0">
                 <div class="form-group">
-                  <button @click="abrirModal()" class="btn btn-success form-control btnagregar">
+                  <button @click="abrirModal()" class="btn btn-success  btnagregar">
                     <i class="icon-plus"></i>
                     <i class="icon-plus"></i>
                     <i class="icon-plus"></i>
@@ -197,7 +297,7 @@
 
               <div class="col-md-2">
                 <div class="form-group">
-                  <button @click="agregarDetalle()" class="btn btn-success form-control btnagregar">
+                  <button @click="agregarDetalle()" class="btn btn-success btnagregar">
                     <i class="icon-plus">Agregar</i>
                   </button>
                 </div>
@@ -398,22 +498,24 @@ Vue.component("v-select", vSelect);
 export default {
   data() {
     return {
-      ingreso_id: 0,
-      idProveedor: 0,
-      proveedor: "",
+      entrega_id: 0,
+      idPromotor: 0,
+      promotor: "",
       cantidad: 0,
+      comprobante:"",
       montoTotal: 0,
       arrayData: [],
       arrayDetalle: [],
       arrayLibro: [],
-      arrayProveedor: [],
+      arrayPromotor: [],
       listado: 1,
       modal: 0,
       tituloModal: "",
       tipoAccion: 0,
       errorMostrar: 0,
       errorMostrarMsj: [],
-      selectedProveedor:null,
+      selectedPromotor:null,
+      pago:2,
       pagination: {
         total: 0,
         current_page: 0,
@@ -423,7 +525,7 @@ export default {
         to: 0
       },
       offset: 4,
-      criterio: "proveedores",
+      criterio: "promotores",
       criterioP: "nombre",
       buscarP: "",
       buscar: "",
@@ -433,7 +535,9 @@ export default {
       grado: "",
       descripcion: "",
       precio: 0,
-      sumaCantidad:0
+      sumaCantidad:0,
+      couta:true,
+      montoCouta:0
     };
     },
     computed: {
@@ -464,12 +568,12 @@ export default {
   methods: {
     listar(page, buscar, criterio) {
       let me = this;
-      var url = "/ingreso?page=" + page + "&buscar=" + buscar;
+      var url = "/entrega?page=" + page + "&buscar=" + buscar;
       axios
         .get(url)
         .then(function(response) {
           var respuesta = response.data;
-          me.arrayData = respuesta.ingresos.data;
+          me.arrayData = respuesta.entregas.data;
           me.pagination = respuesta.pagination;
         })
         .catch(function(error) {
@@ -477,27 +581,27 @@ export default {
         });
     },
 
-    selectProveedor(search, loading) {
+    selectPromotor(search, loading) {
       let me = this;
       loading(true);
-      var url = "/proveedor/select?buscar=" + search;
+      var url = "/promotor/select?buscar=" + search;
       axios
         .get(url)
         .then(function(response) {
           let respuesta = response.data;
           q: search;
-          me.arrayProveedor = respuesta.proveedores;
+          me.arrayPromotor = respuesta.promotores;
           loading(false);
         })
         .catch(function(error) {
           console.log(error);
         });
     },
-    getDatosProveedor(val1) {
+    getDatosPromotor(val1) {
       let me = this;
       me.loading = true;
-      me.idProveedor = val1.id;
-      me.proveedor = val1.nombre;
+      me.idPromotor = val1.id;
+      me.promotor = val1.promotor;
     },
     selectLibro(search, loading) {
       let me = this;
@@ -618,6 +722,14 @@ export default {
         });
       }
     },
+    cambiarCouta(cambiar)
+    {
+      this.couta=cambiar;
+      if(!cambiar)
+      {
+        this.montoCouta=0;
+      }
+    },
     listarLibro(buscar, criterio) {
       let me = this;
       var url = "/libro/listar?buscar=" + buscar + "&criterio=" + criterio;
@@ -639,10 +751,16 @@ export default {
       let me = this;
 
       axios
-        .post("/ingreso/registrar", {
-          idProveedor: this.idProveedor,
+        .post("/entrega/registrar", {
+          idPromotor: this.idPromotor,
+          comprobante:this.comprobante,
           cantidad: this.sumaCantidad,
           montoTotal: this.montoTotal,
+          pago:this.pago,
+          fechaInicio:this.fechaInicio,
+          fechaFin:this.fechaFin,
+          couta:this.couta,
+          montoCouta:this.montoCouta,
           data: this.arrayDetalle
         })
         .then(function(response) {
@@ -661,11 +779,17 @@ export default {
       let me = this;
 
       axios
-        .put("/ingreso/actualizar", {
-          idProveedor: this.idProveedor,
+        .put("/entrega/actualizar", {
+           idPromotor: this.idPromotor,
+          comprobante:this.comprobante,
           cantidad: this.sumaCantidad,
           montoTotal: this.montoTotal,
-          id: this.ingreso_id,
+          pago:this.pago,
+          id:this.entrega_id,
+          fechaInicio:this.fechaInicio,
+          fechaFin:this.fechaFin,
+          couta:this.couta,
+          montoCouta:this.montoCouta,
           data: this.arrayDetalle
         })
         .then(function(response) {
@@ -702,7 +826,7 @@ export default {
             let me = this;
 
             axios
-              .put("/ingreso/desactivar", {
+              .put("/entrega/desactivar", {
                 id: id
               })
               .then(function(response) {
@@ -752,7 +876,7 @@ export default {
             let me = this;
 
             axios
-              .put("/ingreso/activar", {
+              .put("/entrega/activar", {
                 id: id
               })
               .then(function(response) {
@@ -782,33 +906,35 @@ export default {
       this.errorMostrar = 0;
       this.errorMostrarMsj = [];
 
-      if (this.idProveedor == 0 )
-        this.errorMostrarMsj.push("Seleccione al Proveedor");
+      if (this.idPromotor == 0 )
+        this.errorMostrarMsj.push("Seleccione al Promotor");
       if (this.arrayDetalle.length <= 0)
-        this.errorMostrarMsj.push("No Tiene Libros Seleccionado al Detalle");
+           this.errorMostrarMsj.push("No Tiene Libros Seleccionado al Detalle");
 
       if (this.errorMostrarMsj.length) this.errorMostrar = 1;
       return this.errorMostrar;
     },
     limpiarRegistro()
     { 
-      this.proveedor = "";
-      this.selectedProveedor=null;
-      this.idProveedor = 0;
+      this.promotor = "";
+      this.selectedPromotor=null;
+      this.pago=2;
+      this.idPromotor = 0;
       this.cantidad = 0;
       this.montoTotal = 0;
+      this.comprobante="";
       this.descripcion = "";
       this.genero="";
       this.grado="";
       this.idLibro=0;
       this.libro="";
-      this.arrayProveedor=[];
+      this.arrayPromotor=[];
       this.arrayDetalle = [];
-      this.arrayProveedor=[];
+      this.arrayPromotor=[];
     },
     mostrarDetalle(modelo, accion, data = []) {
       switch (modelo) {
-        case "ingreso": {
+        case "entrega": {
           switch (accion) {
             case "registrar": {
               this.listado = 0;
@@ -819,15 +945,17 @@ export default {
             case "actualizar": {
               this.listado = 0;
               this.tipoAccion = 2;
-              this.ingreso_id = data["id"];
-              this.idProveedor = data["idProveedor"];
-              this.selectedProveedor={id:data["idProveedor"],nombre:data["proveedor"]}
-              this.proveedor = data["proveedor"];
+              this.entrega_id = data["id"];
+              this.idPromotor = data["idPromotor"];
+              this.selectedPromotor={id:data["idPromotor"],promotor:data["promotor"]}
+              this.promotor = data["promotor"];
+              this.comprobante=data["comprobante"];
               this.sumaCantidad=data["cantidad"];
+              this.pago= data["pago"];
               this.montoTotal = data["montoTotal"];
 
               let me = this;
-              var url = "/ingreso/listarDetalle?idIngreso=" + data["id"];
+              var url = "/entrega/listarDetalle?id=" + data["id"];
               axios
                 .get(url)
                 .then(function(response) {

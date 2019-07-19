@@ -18,7 +18,7 @@
        </template>
 
        <template v-if="menu==4">
-       <entrega></entrega>      
+       <entrega></entrega>
        </template>
 
        <template v-if="menu==5">

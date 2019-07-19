@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Entrega extends Model
 {
-    protected $fillable = ['nro','idPromotor','fecha','comprobante','cantidad','montoTotal','estado'];
+    protected $fillable = ['nro','idPromotor','fecha','comprobante','cantidad','montoTotal','pago','estado'];
     public $timestamps = false;
 
 }
