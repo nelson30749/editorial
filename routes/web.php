@@ -33,6 +33,7 @@ Route::post('/promotor/registrar', 'PromotorController@store');
 Route::put('/promotor/actualizar', 'PromotorController@update');
 Route::put('/promotor/desactivar', 'PromotorController@desactivar');
 Route::put('/promotor/activar', 'PromotorController@activar');
+Route::get('/promotor/listarDetalle', 'PromotorController@listarDetalle');
 
 Route::get('/departamento', 'DepartamentoController@index');
 Route::post('/departamento/registrar', 'DepartamentoController@store');
@@ -45,6 +46,8 @@ Route::post('/provincia/registrar', 'ProvinciaController@store');
 Route::put('/provincia/actualizar', 'ProvinciaController@update');
 Route::put('/provincia/desactivar', 'ProvinciaController@desactivar');
 Route::put('/provincia/activar', 'ProvinciaController@activar');
+Route::get('/provincia/listar', 'ProvinciaController@listar');
+Route::get('/provincia/select', 'ProvinciaController@select');
 
 Route::get('/libro', 'LibroController@index');
 Route::post('/libro/registrar', 'LibroController@store');

@@ -41,6 +41,47 @@ class ProvinciaController extends Controller
         ];
     }
 
+    public function listar(Request $request)
+    {
+        // if(!$request->ajax()) return redirect('/');
+        $buscar = $request->buscar;
+        $criterio=$request->criterio;
+        if($criterio=='provincia')
+        {
+            $provincias= Provincia::join('departamentos','provincias.idDpto','departamentos.id')
+            ->select('provincias.id','provincias.nombre as provincia','departamentos.nombre as departamento','provincias.estado')
+            ->where('provincias.nombre','like','%'.$buscar.'%')
+            ->where('provincias.estado','=','1')
+            ->orderBy('provincias.id','desc')
+            ->limit(10)
+            ->get();
+        }
+        else{
+            $provincias= Provincia::join('departamentos','provincias.idDpto','departamentos.id')
+            ->select('provincias.id','provincias.nombre as provincia','departamentos.nombre as departamento','provincias.estado')
+            ->where('departamentos.nombre','like','%'.$buscar.'%')
+            ->where('provincias.estado','=','1')
+            ->orderBy('provincias.id','desc')
+            ->limit(10)
+            ->get();
+        }
+     
+        return ['provincias' => $provincias];
+    }
+    public function select(Request $request)
+    {
+        // if(!$request->ajax()) return redirect('/');
+        $buscar = $request->buscar;
+        $provincias= Provincia::join('departamentos','provincias.idDpto','departamentos.id')
+        ->select('provincias.id','provincias.nombre as provincia','departamentos.nombre as departamento','provincias.estado')
+        ->where('provincias.nombre','like','%'.$buscar.'%')
+        ->where('provincias.estado','=','1')
+        ->orderBy('provincias.id','desc')
+        ->limit(10)
+        ->get();
+     
+        return ['provincias' => $provincias];
+    }
     public function store(Request $request)
         {   
             if (!$request->ajax()) return redirect('/');
