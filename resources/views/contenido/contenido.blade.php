@@ -34,7 +34,7 @@
        </template>
 
        <template v-if="menu==8">
-              <couta></couta>
+              <plan_pago></plan_pago>
        </template>
 
        <template v-if="menu==9">

@@ -49,8 +49,8 @@ class PromotorController extends Controller
         // if(!$request->ajax()) return redirect('/');
         $buscar = $request->buscar;
         $promotores= Promotor::select('id',DB::raw("concat(promotores.nombre,' ',promotores.apellido) as promotor"))
-        ->where('promotores.nombre','like','%'.$buscar.'%')
         ->where('promotores.estado','=','1')
+        ->where('promotores.nombre','like','%'.$buscar.'%')
         ->orderBy('promotores.id','desc')
         ->limit(10)
         ->get();

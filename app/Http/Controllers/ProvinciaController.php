@@ -14,7 +14,7 @@ class ProvinciaController extends Controller
         if($buscar=='')
         {
             $provincias= Provincia::join('departamentos','provincias.idDpto','=','departamentos.id')
-            ->select('provincias.id','departamentos.nombre as departamento','provincias.nombre as provincia','provincias.estado')
+            ->select('provincias.id','idDpto','departamentos.nombre as departamento','provincias.nombre as provincia','provincias.estado')
             ->where('provincias.estado','=','1')
             ->orderBy('provincias.id','desc')
             ->paginate(10);

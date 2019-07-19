@@ -29,8 +29,8 @@
                 <table class="table table-responsive-sm table-bordered table-striped table-sm">
                     <thead>
                         <tr>   
-                                                    
-                            <th>Nombre</th>
+                            <th>ID</th>             
+                            <th>Provincia</th>
                             <th>Departamento</th>
                             <th>Estado</th>
                             <th>Opciones</th>  
@@ -39,9 +39,9 @@
                     </thead>
                     <tbody>
                         <tr v-for="data in arrayData" :key="data.id">
-                            
-                            <td v-text="data.nombre"></td>
-                            <td v-text="data.nombreDepartamento"></td>
+                            <td><span class="badge badge-success" v-text="data.id"></span></td>
+                            <td v-text="data.provincia"></td>
+                            <td v-text="data.departamento"></td>
                             <td>
                                 <div v-if="data.estado">
                                    <span class="badge badge-success">Activo</span>
@@ -109,7 +109,19 @@
                                 
                             </div>
                         </div>
-                        
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Nombre</label>
+                            <div class="col-md-9">
+                                <v-select
+                                v-model="selectedDpto"
+                                @search="selectDpto"
+                                label="nombre"
+                                :options="arrayDpto"
+                                placeholder="Buscar Departartamento..."
+                                @input="getDatosDpto"
+                              ></v-select>
+                            </div>
+                        </div>
                            
                      <div v-show="error" class="form-group row div-error">
                            <div class="text-center text-error">
@@ -144,12 +156,11 @@ export default {
   data() {
     return {
       provincia_id: 0,
-      departamento_id :0,
+      idDpto :0,
       nombre: '',
-      nombreDepartamento : '',
-      
-      
+      departamento : '',
       arrayData: [],
+      arrayDpto:[],
       modal: 0,
       tituloModal: '',
       tipoAccion: 0,
@@ -165,7 +176,8 @@ export default {
                 },
                 offset : 3,
                 criterio : 'nombre',
-                buscar : ''
+                buscar : '',
+                selectedDpto:null
     }
   },
   computed:{
@@ -205,7 +217,7 @@ export default {
       axios.get(url).then(function(response) {
           // handle success
          var respuesta= response.data;
-         me.arrayData = respuesta.provincia.data;
+         me.arrayData = respuesta.provincias.data;
          me.pagination= respuesta.pagination;
           //console.log(response);
         })
@@ -221,6 +233,28 @@ export default {
                 //Envia la petición para visualizar la data de esa página
                 me.listar(page,buscar,criterio);
             },
+             selectDpto(search, loading) {
+      let me = this;
+      loading(true);
+      var url = "/departamento/select?buscar=" + search;
+      axios
+        .get(url)
+        .then(function(response) {
+          let respuesta = response.data;
+          q: search;
+          me.arrayDpto = respuesta.departamentos;
+          loading(false);
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
+    getDatosDpto(val1) {
+      let me = this;
+      me.loading = true;
+      me.idDpto = val1.id;
+      me.departamento = val1.nombre;
+    },
     registrar() {
       if (this.validar()) {
         return;
@@ -229,8 +263,8 @@ export default {
 
       axios
         .post("/provincia/registrar", {
-          'nombre': this.nombre,
-          // 'descripcion': this.descripcion
+          nombre: this.nombre,
+          idDpto: this.idDpto
         })
         .then(function(response) {
           me.cerrarModal();
@@ -255,9 +289,9 @@ export default {
       let me = this;
       axios
         .put("/provincia/actualizar", {
-          'nombre': this.nombre,
-          // 'descripcion': this.descripcion,
-          'id': this.provincia_id
+           nombre: this.nombre,
+          idDpto: this.idDpto,
+          id: this.provincia_id
         })
         .then(function(response) {
           me.cerrarModal();
@@ -274,96 +308,105 @@ export default {
           console.log(error);
         });       
     },
-    desactivar(id) {
-      const swalWithBootstrapButtons = swal.mixin({
-        confirmButtonClass: "btn btn-success",
-        cancelButtonClass: "btn btn-danger",
+  desactivar(id) {
+      const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: "btn btn-success",
+          cancelButton: "btn btn-danger"
+        },
         buttonsStyling: false
       });
 
-      swalWithBootstrapButtons({
-        title: "Esta seguro de desactivar esta provincia?",
-        text: "You won't be able to revert this!",
-        type: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Aceptar",
-        cancelButtonText: "Cancelar",
-        reverseButtons: true
-      }).then(result => {
-        if (result.value) {
-          let me = this;
-          axios
-            .put("/provincia/desactivar", {
-              id: id
-            })
-            .then(function(response) {
-              me.listar(1,'','nombre');
-              swalWithBootstrapButtons(
-                "Desactivado!",
-                "El registro ha sido desactivado con exito.",
-                "success"
-              );
-            })
-            .catch(function(error) {
-              console.log(error);
+      swalWithBootstrapButtons
+        .fire({
+          title: "Estas Seguro de Desactivar el Registro?",
+          text: "Si Desactiva no estara en la Lista!",
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Si, Desactivar!",
+          cancelButtonText: "No, Cancelar!",
+          reverseButtons: true
+        })
+        .then(result => {
+          if (result.value) {
+            let me = this;
+
+            axios
+              .put("/provincia/desactivar", {
+                id: id
+              })
+              .then(function(response) {
+                me.listar(1, "", "nombre");
+                Swal.fire({
+                  position: "center",
+                  type: "success",
+                  title: "El Registro ha sido Desactivado",
+                  showConfirmButton: false,
+                  timer: 1000
+                }).catch(function(error) {
+                  console.log(error);
+                });
+              });
+          } else if (result.dismiss === Swal.DismissReason.cancel) {
+            Swal.fire({
+              position: "center",
+              type: "error",
+              title: "Cancelado",
+              showConfirmButton: false,
+              timer: 1000
             });
-        } else if (
-          // Read more about handling dismissals
-          result.dismiss === swal.DismissReason.cancel
-        ) {
-          /* swalWithBootstrapButtons(
-      'Cancelled',
-      'Your imaginary file is safe :)',
-      'error'
-    )*/
-        }
-      });
+          }
+        });
     },
-
     activar(id) {
-      const swalWithBootstrapButtons = swal.mixin({
-        confirmButtonClass: "btn btn-success",
-        cancelButtonClass: "btn btn-danger",
+      const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: "btn btn-success",
+          cancelButton: "btn btn-danger"
+        },
         buttonsStyling: false
       });
 
-      swalWithBootstrapButtons({
-        title: "Esta seguro de activar esta categoria?",
-       // text: "You won't be able to revert this!",
-        type: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Aceptar",
-        cancelButtonText: "Cancelar",
-        reverseButtons: true
-      }).then(result => {
-        if (result.value) {
-          let me = this;
-          axios
-            .put("/provincia/activar", {
-              id: id
-            })
-            .then(function(response) {
-              me.listar(1,'','nombre');
-              swalWithBootstrapButtons(
-                "Activado!",
-                "El registro ha sido activado con exito.",
-                "success"
-              );
-            })
-            .catch(function(error) {
-              console.log(error);
+      swalWithBootstrapButtons
+        .fire({
+          title: "Estas Seguro de Activar el Registro?",
+          text: "Si Activa Estara en la Lista!",
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Si, Activar!",
+          cancelButtonText: "No, Cancelar!",
+          reverseButtons: true
+        })
+        .then(result => {
+          if (result.value) {
+            let me = this;
+
+            axios
+              .put("/provincia/activar", {
+                id: id
+              })
+              .then(function(response) {
+                me.listar(1, "", "nombre");
+                Swal.fire({
+                  position: "center",
+                  type: "success",
+                  title: "El Registro ha sido Activado",
+                  showConfirmButton: false,
+                  timer: 1000
+                }).catch(function(error) {
+                  console.log(error);
+                });
+              });
+          } else if (result.dismiss === Swal.DismissReason.cancel) {
+            Swal.fire({
+              position: "center",
+              type: "error",
+              title: "Cancelado",
+              showConfirmButton: false,
+              timer: 1000
             });
-        } else if (
-          // Read more about handling dismissals
-          result.dismiss === swal.DismissReason.cancel
-        ) {
-          /* swalWithBootstrapButtons(
-      'Cancelled',
-      'Your imaginary file is safe :)',
-      'error'
-    )*/
-        }
-      });
+          }
+        });
     },
     validar() {
       this.error = 0;
@@ -382,7 +425,17 @@ export default {
     cerrarModal() {
       this.modal = 0;
       this.tituloModal = "";
-      this.nombre = "";
+     this.limpiarRegistro();
+    },
+    limpiarRegistro()
+    { 
+      this.provincia= "";
+      this.nombre="";
+      this.selectedDpto=null;
+      this.idProvincia= 0;
+      this.idDpto=0;
+      this.departamento="";
+      this.arrayDetalle = [];
     },
     abrirModal(modelo, accion, data = []) {
       switch (modelo) {
@@ -391,17 +444,19 @@ export default {
             case "registrar": {
               this.modal = 1;
               this.tituloModal = "Registrar Provincia";
-              this.nombre = "";
+              this.limpiarRegistro();
               this.tipoAccion = 1;
               break;
             }
             case "actualizar": {
-              // console.log(data);
+              this.provincia_id = data["id"];
+              this.nombre = data["provincia"];
+              this.departamento=data["departamento"]
+              this.idDpto=data["idDpto"];
+              this.selectedDpto={id:data["idDpto"],nombre:data["departamento"]};
               this.modal = 1;
               this.tituloModal = "Actualizar categoria";
               this.tipoAccion = 2;
-              this.provincia_id = data["id"];
-              this.nombre = data["nombre"];
               break;
             }
           }

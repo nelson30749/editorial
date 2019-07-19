@@ -42,6 +42,7 @@ Route::post('/departamento/registrar', 'DepartamentoController@store');
 Route::put('/departamento/actualizar', 'DepartamentoController@update');
 Route::put('/departamento/desactivar', 'DepartamentoController@desactivar');
 Route::put('/departamento/activar', 'DepartamentoController@activar');
+Route::get('/departamento/select', 'DepartamentoController@select');
 
 Route::get('/provincia', 'ProvinciaController@index');
 Route::post('/provincia/registrar', 'ProvinciaController@store');
@@ -65,3 +66,7 @@ Route::put('/proveedor/actualizar', 'ProveedorController@update');
 Route::put('/proveedor/desactivar', 'ProveedorController@desactivar');
 Route::put('/proveedor/activar', 'ProveedorController@activar');
 Route::get('/proveedor/select', 'ProveedorController@select');
+
+Route::get('/plan_pago', 'PlanPagoController@index');
+Route::get('/plan_pago/listarDetalle', 'PlanPagoController@listarDetalle');
+Route::post('/plan_pago/registrar', 'PlanPagoController@store');

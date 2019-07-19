@@ -36,7 +36,17 @@ class DepartamentoController extends Controller
             'departamentos' => $departamentos
         ];
     }
-
+    public function select(Request $request)
+    {
+        // if(!$request->ajax()) return redirect('/');
+        $buscar = $request->buscar;
+        $departamentos= Departamento::where('departamentos.nombre','like','%'.$buscar.'%')
+        ->where('departamentos.estado','=','1')
+        ->limit(10)
+        ->get();
+     
+        return ['departamentos' => $departamentos];
+    }
     public function store(Request $request)
         {   
             if (!$request->ajax()) return redirect('/');

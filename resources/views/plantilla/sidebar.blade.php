@@ -44,10 +44,10 @@
                     </ul>
                 </li>
                 <li class="nav-item nav-dropdown">
-                    <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-people"></i> Coutas</a>
+                    <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-people"></i> Plan Pago</a>
                     <ul class="nav-dropdown-items">
                         <li @click="menu=8" class="nav-item">
-                            <a class="nav-link" href="#"><i class="icon-user"></i> Coutas</a>
+                            <a class="nav-link" href="#"><i class="icon-user"></i> Plan Pago</a>
                         </li>
                        
                     </ul>

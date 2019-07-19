@@ -26,7 +26,8 @@
               <div class="col-md-6">
                 <div class="input-group">
                   <select class="form-control col-md-5" v-model="criterio">
-                    <option value="promotores">Promotores</option>
+                    <option value="nombre">Promotor Nombre</option>
+                    <option value="apellido">Promotor Apellido</option>
                   </select>
                   <input
                     type="text"
@@ -85,13 +86,13 @@
                     </div>
                   </td>
                   <td>
-                    <button
+                    <!-- <button
                       type="button"
                       @click="mostrarDetalle('entrega','actualizar',data)"
                       class="btn btn-warning btn-sm"
                     >
                       <i class="icon-pencil"></i>
-                    </button> &nbsp;
+                    </button> &nbsp; -->
                     <template v-if="data.estado">
                       <button
                         type="button"
@@ -153,7 +154,7 @@
               <div class="col-md-6">
                 <div class="form-group">
                   <label>
-                    Proveedor
+                    Proomotor
                     <span v-show="promotor==''">(*Selecione)</span>
                   </label>
                   <v-select
@@ -168,7 +169,9 @@
               </div>
               <div class="col-md-6">
                 <div class="form-group">
-                  <label for>Entrega </label>
+                  <label for>Entrega 
+                     <span v-show="pago==2">(*Selecione)</span>
+                  </label>
                   <select class="form-control col-md-12" v-model="pago">
                     <option value=2 >Seleccione</option>
                     <option value=1>Contado</option>
@@ -226,39 +229,32 @@
                   <input type="number" disabled class="form-control" v-model="montoTotal">
                 </div>
               </div>
-              <div class="col-md-6" v-if="couta">
+              <div class="col-md-6" v-if="cuota">
                 <div class="form-group">
-                  <button @click="cambiarCouta(false)" class="btn btn-success btnagregar">
-                    <i class="icon-plus">Agregar Couta</i>
+                  <button @click="cambiarCuota(false)" class="btn btn-success btnagregar">
+                    <i class="icon-plus">Agregar Cuota</i>
                   </button>
                 </div>
               </div>
               <div class="col-md-6" v-else>
                 <div class="form-group">
-                  <button @click="cambiarCouta(true)" class="btn btn-danger btnagregar">
-                    <i class="icon-close">Quitar Couta</i>
+                  <button @click="cambiarCuota(true)" class="btn btn-danger btnagregar">
+                    <i class="icon-close">Quitar Cuota</i>
                   </button>
                 </div>
               </div>
-              <div class="col-md-12" v-if="couta==false">
+              <div class="col-md-12" v-if="cuota==false">
                 <div class="form-group">
                   <label for>
-                    Monto Couta
+                    Monto Cuota
                     <br>
                   </label>
                   <input
                     type="number"
-                    v-model="montoCouta"
+                    v-model="montoCuota"
                     class="form-control"
-                    placeholder="Monto de la Couta.."
+                    placeholder="Monto de la Cuota.."
                   >
-                </div>
-              </div>
-              <div class="col-md-12">
-                <div v-show="errorMostrar" class="form-group row div-error">
-                  <div class="text-center text-error">
-                    <div v-for="error in errorMostrarMsj" :key="error" v-text="error"></div>
-                  </div>
                 </div>
               </div>
             </div>
@@ -525,7 +521,7 @@ export default {
         to: 0
       },
       offset: 4,
-      criterio: "promotores",
+      criterio: "nombre",
       criterioP: "nombre",
       buscarP: "",
       buscar: "",
@@ -536,8 +532,10 @@ export default {
       descripcion: "",
       precio: 0,
       sumaCantidad:0,
-      couta:true,
-      montoCouta:0
+      cuota:true,
+      montoCuota:0,
+      fechaInicio:new Date(),
+      fechaFin:new Date()
     };
     },
     computed: {
@@ -568,7 +566,7 @@ export default {
   methods: {
     listar(page, buscar, criterio) {
       let me = this;
-      var url = "/entrega?page=" + page + "&buscar=" + buscar;
+      var url = "/entrega?page=" + page + "&buscar=" + buscar+"&criterio="+criterio;
       axios
         .get(url)
         .then(function(response) {
@@ -722,12 +720,12 @@ export default {
         });
       }
     },
-    cambiarCouta(cambiar)
+    cambiarCuota(cambiar)
     {
-      this.couta=cambiar;
+      this.cuota=cambiar;
       if(!cambiar)
       {
-        this.montoCouta=0;
+        this.montoCuota=0;
       }
     },
     listarLibro(buscar, criterio) {
@@ -759,8 +757,8 @@ export default {
           pago:this.pago,
           fechaInicio:this.fechaInicio,
           fechaFin:this.fechaFin,
-          couta:this.couta,
-          montoCouta:this.montoCouta,
+          cuota:this.cuota,
+          montoCuota:this.montoCuota,
           data: this.arrayDetalle
         })
         .then(function(response) {
@@ -788,8 +786,8 @@ export default {
           id:this.entrega_id,
           fechaInicio:this.fechaInicio,
           fechaFin:this.fechaFin,
-          couta:this.couta,
-          montoCouta:this.montoCouta,
+          cuota:this.cuota,
+          montoCuota:this.montoCuota,
           data: this.arrayDetalle
         })
         .then(function(response) {
@@ -908,6 +906,8 @@ export default {
 
       if (this.idPromotor == 0 )
         this.errorMostrarMsj.push("Seleccione al Promotor");
+        if (this.pago == 2 )
+        this.errorMostrarMsj.push("Seleccione la Entrega");
       if (this.arrayDetalle.length <= 0)
            this.errorMostrarMsj.push("No Tiene Libros Seleccionado al Detalle");
 

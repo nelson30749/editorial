@@ -18,8 +18,8 @@ class CreatePromotoresTable extends Migration
             $table->string('ci' ,50);
             $table->string('nombre' ,50);
             $table->string('apellido' ,50);
-            $table->string('direccion' ,80)->nullable();;
-            $table->integer('telefono')->nullable();;
+            $table->string('direccion' ,200)->nullable();;
+            $table->string('telefono',10)->nullable();;
             $table->string('email' ,80)->nullable();;
             $table->boolean('estado')->default(1);
             // $table->timestamps();

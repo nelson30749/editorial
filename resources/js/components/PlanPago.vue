@@ -10,14 +10,14 @@
       <!-- Ejemplo de tabla Listado -->
       <div class="card">
         <div class="card-header">
-          <i class="fa fa-align-justify"></i> Ingreso
-          <button
+          <i class="fa fa-align-justify"></i> Plan Pago
+          <!-- <button
             type="button"
-            @click="mostrarDetalle('ingreso','registrar')"
+            @click="mostrarDetalle()"
             class="btn btn-secondary"
           >
             <i class="icon-plus"></i>&nbsp;Nuevo
-          </button>
+          </button> -->
         </div>
         <!---Listado -->
         <template v-if="listado==1">
@@ -26,7 +26,8 @@
               <div class="col-md-6">
                 <div class="input-group">
                   <select class="form-control col-md-5" v-model="criterio">
-                    <option value="proveedores">Proveedores</option>
+                    <option value="nombre">Promotor Nombre</option>
+                    <option value="apellido">Promotor Apellido</option>
                   </select>
                   <input
                     type="text"
@@ -46,10 +47,12 @@
               <thead>
                 <tr>
                   <th>ID</th>
-                  <th>N°</th>
-                  <th>Proveedor</th>
+                  <th>N° Entrega</th>
+                  <th>Promotor</th>
                   <th>Fecha</th>
-                  <th>Cantidad</th>
+                  <th>Fecha Inicial</th>
+                  <th>Fecha Final</th>
+                  <th>Pago</th>
                   <th>Monto Total</th>
                   <th>Estado</th>
                   <th>Opciones</th>
@@ -60,10 +63,12 @@
                   <td>
                     <span class="badge badge-success" v-text="data.id"></span>
                   </td>
-                  <td v-text="data.nro"></td>
-                  <td v-text="data.proveedor"></td>
+                  <td v-text="data.idEntrega"></td>
+                  <td v-text="data.promotor"></td>
                   <td v-text="data.fecha"></td>
-                  <td v-text="data.cantidad"></td>
+                  <td v-text="data.fechaInicio"></td>
+                  <td v-text="data.fechaFin"></td>
+                  <td v-text="data.pago"></td>
                   <td v-text="data.montoTotal"></td>
                   <td>
                     <div v-if="data.estado">
@@ -76,10 +81,10 @@
                   <td>
                     <button
                       type="button"
-                      @click="mostrarDetalle('ingreso','actualizar',data)"
-                      class="btn btn-warning btn-sm"
+                      @click="mostrarDetalle(data)"
+                      class="btn btn-success btn-sm"
                     >
-                      <i class="icon-pencil"></i>
+                      <i class="icon-eye"></i>
                     </button> &nbsp;
                     <template v-if="data.estado">
                       <button
@@ -139,125 +144,71 @@
         <template v-else-if="listado==0">
           <div class="card-body">
             <div class="form-group row border">
-              <div class="col-md-12">
-                <div class="form-group">
-                  <label>
-                    Proveedor
-                    <span v-show="proveedor==''">(*Selecione)</span>
-                  </label>
-                  <v-select
-                    v-model="selectedProveedor"
-                    @search="selectProveedor"
-                    label="nombre"
-                    :options="arrayProveedor"
-                    placeholder="Buscar Proveedor.."
-                    @input="getDatosProveedor"
-                  ></v-select>
-                </div>
-              </div>
-              <div class="col-md-12">
-                <div v-show="errorMostrar" class="form-group row div-error">
-                  <div class="text-center text-error">
-                    <div v-for="error in errorMostrarMsj" :key="error" v-text="error"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="form-group row border">
               <div class="col-md-6">
                 <div class="form-group">
                   <label>
-                    Libro
-                    <span v-show="libro==''">(*Selecione)</span>
+                    Promotor
+                    <span v-show="promotor==''">(*Selecione)</span>
                   </label>
-                  <v-select
-                    @search="selectLibro"
-                    label="nombre"
-                    :options="arrayLibro"
-                    placeholder="Buscar Libro..."
-                    @input="getDatosLibro"
-                  ></v-select>
-                </div>
-              </div>
-              <div class="col-md-0">
-                <div class="form-group">
-                  <button @click="abrirModal()" class="btn btn-success form-control btnagregar">
-                    <i class="icon-plus"></i>
-                    <i class="icon-plus"></i>
-                    <i class="icon-plus"></i>
-                  </button>
-                </div>
-              </div>
-              <div class="col-md-2">
-                <div class="form-group">
-                  <label for>Cantidad</label>
-                  <input type="number" value="0" class="form-control" v-model="cantidad" />
+                   <input
+                    type="text"
+                    disabled
+                    v-model="promotor"
+                    class="form-control"
+                    placeholder="Promotor.."
+                  >
                 </div>
               </div>
 
               <div class="col-md-2">
                 <div class="form-group">
-                  <button @click="agregarDetalle()" class="btn btn-success form-control btnagregar">
-                    <i class="icon-plus">Agregar</i>
+                  <label for>
+                    ID
+                    <br>
+                  </label>
+                  <input
+                    type="text"
+                    disabled
+                    v-model="plan_id"
+                    class="form-control"
+                    placeholder="ID.."
+                  >
+                </div>
+              </div>
+               <div class="col-md-2">
+                <div class="form-group">
+                  <button @click="abrirModal()" class="btn btn-success btnagregar">
+                    <i class="icon-plus">Agregar Cuota</i>
                   </button>
                 </div>
               </div>
             </div>
+
             <div class="form-group row border">
               <div class="table-responsive col-md-12">
                 <table class="table table-bordered table-striped table-sm">
                   <thead>
                     <tr>
-                      <th>Opciones</th>
-                      <td>ID</td>
-                      <th>Nombre</th>
-                      <th>Genero</th>
-                      <th>Grado</th>
-                      <th>Descripcion</th>
-                      <th>Precio</th>
-                      <th>Cantidad</th>
-                      <th>SubTotal</th>
+                      <th>ID</th>
+                      <th>N°</th>
+                      <th>Fecha</th>
+                      <th>Monto</th>
                     </tr>
                   </thead>
-                  <tbody v-if="(arrayDetalle.length)">
-                    <tr v-for="(detalle,index) in arrayDetalle" :key="detalle.id">
-                      <td>
-                        <button
-                          @click="eliminarDetalle(index)"
-                          type="button"
-                          class="btn btn-danger btn-sm"
-                        >
-                          <i class="icon-close"></i>
-                        </button>
-                      </td>
+                  <tbody>
+                    <tr v-for="(detalle) in arrayDetalle" :key="detalle.id">
                       <td>
                         <span class="badge badge-success" v-text="detalle.id"></span>
                       </td>
-
-                      <td v-text="detalle.nombre"></td>
-                      <td>{{ detalle.genero }}</td>
-                      <td v-text="detalle.grado"></td>
-                      <td>{{ detalle.descripcion }}</td>
-                      <td>{{ detalle.precio }}</td>
-                      <td>
-                        <input
-                          type="number"
-                          @keyup.enter="ingresoTotal()"
-                          v-model="detalle.cantidad"
-                          class="form-control"
-                        />
+                        <td>
+                        <span class="badge badge-success" v-text="detalle.nro"></span>
                       </td>
-                      <td>{{ (detalle.cantidad*detalle.precio) }}</td>
+                      <td v-text="detalle.fecha"></td>
+                      <td>{{ detalle.monto }}</td>
                     </tr>
                     <tr>
-                      <td colspan="7">Total</td>
-                      <td>Cantidad: {{ sumaCantidad }}</td>
-                      <td>Monto: Bs. {{ montoTotal }}</td>
-                    </tr>
-                  </tbody>
-                  <tbody v-else>
-                    <tr>
-                      <td colspan="9">No hay Productos Agregados</td>
+                      <td colspan="3">Total</td>
+                      <td>Monto Cuota: {{ sumaCuota }}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -270,16 +221,15 @@
                 <button type="button" class="btn btn-secondary" @click="ocultarDetalle()">Cerrar</button>
                 <button
                   type="button"
-                  v-if="tipoAccion==1"
                   class="btn btn-primary"
-                  @click="registrar()"
-                >Guardar</button>
-                <button
+                  @click="cuotaTotal()"
+                >Calcular</button>
+                <!-- <button
                   type="button"
                   v-if="tipoAccion==2"
                   class="btn btn-primary"
                   @click="actualizar();"
-                >Actualizar</button>
+                >Actualizar</button> -->
               </div>
             </div>
           </div>
@@ -307,78 +257,40 @@
             </button>
           </div>
           <div class="modal-body">
-            <div class="form-group row">
-              <div class="col-md-6">
-                <div class="input-group">
-                  <select class="form-control col-md-3" v-model="criterioP">
-                    <option value="nombre">Nombre</option>
-                    <option value="genero">Genero</option>
-                    <option value="grado">Grado</option>
-                    <option value="descripcion">Descripcion</option>
-                  </select>
+            <!-- <form action method="post" enctype="multipart/form-data" class="form-horizontal"> -->
+              <div class="form-group row">
+                <label class="col-md-3 form-control-label" for="text-input">Monto</label>
+                <div class="col-md-9">
                   <input
-                    type="text"
-                    v-model="buscarP"
-                    @keyup="listarLibro(buscarP,criterioP)"
+                    type="number"
+                    v-model="monto"
                     class="form-control"
-                    placeholder="Buscar Producto"
+                    placeholder="Monto............."
                   />
-                  <button
-                    type="submit"
-                    @click="listarLibro(buscarP,criterioP)"
-                    class="btn btn-primary"
-                  >
-                    <i class="fa fa-search"></i> Buscar
-                  </button>
                 </div>
               </div>
-            </div>
-            <div class="table-responsive">
-              <table class="table table-bordered table-striped table-sm">
-                <thead>
-                  <tr>
-                    <th>Opciones</th>
-                    <th>Nombre</th>
-                    <th>Genero</th>
-                    <th>Grado</th>
-                    <th>Descripcion</th>
-                    <th>Stock</th>
-                    <th>Precio</th>
-                    <th>Estado</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="libros in arrayLibro" :key="libros.id">
-                    <td>
-                      <button
-                        type="button"
-                        @click="agregarDetalleModal(libros)"
-                        class="btn btn-success btn-sm"
-                      >
-                        <i class="icon-check"></i>
-                      </button>
-                    </td>
-                    <td v-text="libros.nombre"></td>
-                    <td v-text="libros.genero"></td>
-                    <td v-text="libros.grado"></td>
-                    <td v-text="libros.descripcion"></td>
-                    <td v-text="libros.stock"></td>
-                    <td v-text="libros.precio"></td>
-                    <td>
-                      <div v-if="libros.estado">
-                        <span class="badge badge-success">Activo</span>
-                      </div>
-                      <div v-else>
-                        <span class="badge badge-danger">Desactivado</span>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+            
+              <div v-show="errorMostrar" class="form-group row">
+                <div class="text-center text-error">
+                  <div v-for="errors in errorMostrarMsj" :key="errors" v-text="errors"></div>
+                </div>
+              </div>
+              <div class="col-md-12">
+                <div v-show="errorMostrar" class="form-group row div-error">
+                  <div class="text-center text-error">
+                    <div v-for="error in errorMostrarMsj" :key="error" v-text="error"></div>
+                  </div>
+                </div>
+              </div>
+            <!-- </form> -->
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              @click="registrar()"
+            >Guardar</button>
           </div>
         </div>
         <!-- /.modal-content -->
@@ -398,22 +310,20 @@ Vue.component("v-select", vSelect);
 export default {
   data() {
     return {
-      ingreso_id: 0,
-      idProveedor: 0,
-      proveedor: "",
-      cantidad: 0,
+      plan_id: 0,
+      idCuota: 0,
+      promotor: "",
       montoTotal: 0,
+      monto:0,
       arrayData: [],
       arrayDetalle: [],
-      arrayLibro: [],
-      arrayProveedor: [],
       listado: 1,
       modal: 0,
       tituloModal: "",
       tipoAccion: 0,
       errorMostrar: 0,
       errorMostrarMsj: [],
-      selectedProveedor:null,
+      pago:1,
       pagination: {
         total: 0,
         current_page: 0,
@@ -423,17 +333,9 @@ export default {
         to: 0
       },
       offset: 4,
-      criterio: "proveedores",
-      criterioP: "nombre",
-      buscarP: "",
+      criterio: "nombre",
       buscar: "",
-      libro: "",
-      idLibro: 0,
-      genero: "",
-      grado: "",
-      descripcion: "",
-      precio: 0,
-      sumaCantidad:0
+      sumaCuota:0
     };
     },
     computed: {
@@ -464,66 +366,17 @@ export default {
   methods: {
     listar(page, buscar, criterio) {
       let me = this;
-      var url = "/ingreso?page=" + page + "&buscar=" + buscar;
+      var url = "/plan_pago?page=" + page + "&buscar=" + buscar+"&criterio="+criterio;
       axios
         .get(url)
         .then(function(response) {
           var respuesta = response.data;
-          me.arrayData = respuesta.ingresos.data;
+          me.arrayData = respuesta.plan_pagos.data;
           me.pagination = respuesta.pagination;
         })
         .catch(function(error) {
           console.log(error);
         });
-    },
-
-    selectProveedor(search, loading) {
-      let me = this;
-      loading(true);
-      var url = "/proveedor/select?buscar=" + search;
-      axios
-        .get(url)
-        .then(function(response) {
-          let respuesta = response.data;
-          q: search;
-          me.arrayProveedor = respuesta.proveedores;
-          loading(false);
-        })
-        .catch(function(error) {
-          console.log(error);
-        });
-    },
-    getDatosProveedor(val1) {
-      let me = this;
-      me.loading = true;
-      me.idProveedor = val1.id;
-      me.proveedor = val1.nombre;
-    },
-    selectLibro(search, loading) {
-      let me = this;
-      loading(true);
-      var url = "/libro/select?buscar=" + search;
-      axios
-        .get(url)
-        .then(function(response) {
-          let respuesta = response.data;
-          q: search;
-          me.arrayLibro = respuesta.libros;
-          loading(false);
-        })
-        .catch(function(error) {
-          console.log(error);
-        });
-    },
-    getDatosLibro(val1) {
-      let me = this;
-      me.loading = true;
-      me.idLibro = val1.id;
-      me.libro = val1.nombre;
-      me.genero = val1.genero;
-      me.grado = val1.grado;
-      me.descripcion = val1.descripcion;
-      me.precio = val1.precio;
     },
     cambiarPagina(page, buscar, criterio) {
       let me = this;
@@ -532,106 +385,14 @@ export default {
       // enviar la peticion para visualizar la data de esta pagina
       me.listar(page, buscar, criterio);
     },
-    encuentra(id) {
-      var sw = false;
-      for (var i = 0; i < this.arrayDetalle.length && sw==false; i++) {
-        if (this.arrayDetalle[i].id == id) {
-          sw = true;
-        }
-      }
-      return sw;
-    },
-    eliminarDetalle(index) {
+    cuotaTotal() {
       let me = this;
-      me.arrayDetalle.splice(index, 1);
-    },
-    ingresoTotal() {
-      let me = this;
-      me.montoTotal = 0;
-      me.sumaCantidad = 0;
+      me.sumaCuota= 0;
       for (var i = 0; i < this.arrayDetalle.length; i++) {
-        if (
-          me.arrayDetalle[i].cantidad != 0 &&
-          me.arrayDetalle[i].cantidad != ""
-        ) {
-          // Suma Monto Total
-          me.montoTotal = me.arrayDetalle[i].cantidad * me.arrayDetalle[i].precio +me.montoTotal;
-            // suma Cantidad
-          me.sumaCantidad =me.arrayDetalle[i].cantidad*1 + me.sumaCantidad;
-        }
+          me.sumaCuota =me.arrayDetalle[i].monto*1+ me.sumaCuota; 
       }
-      // return me.montoTotal;
       
     },
-
-    agregarDetalle() {
-      let me = this;
-      if (me.idLibro == 0) {
-         Swal.fire({
-              position: "center",
-              title: "Error !!",
-              type: "error", 
-              showConfirmButton: false,
-              timer: 1000
-            });
-      } else {
-        if (me.encuentra(me.idLibro)) {
-          Swal.fire({
-              position: "center",
-              title: "El Producto ya se Encuentra Agregado",
-              type: "error",
-              showConfirmButton: false,
-              timer: 1000
-            });
-        } else {
-          me.arrayDetalle.push({
-            id: me.idLibro,
-            nombre: me.libro,
-            genero: me.genero,
-            grado: me.grado,
-            descripcion: me.descripcion,
-            precio: me.precio,
-            cantidad: me.cantidad
-          });
-        }
-      }
-    },
-    agregarDetalleModal(data = []) {
-      let me = this;
-      if (me.encuentra(data["id"])) {
-        Swal.fire({
-              position: "center",
-              title: "El Producto ya se Encuentra Agregado",
-              type: "error",
-              showConfirmButton: false,
-              timer: 1000
-            });
-      } else {
-        me.arrayDetalle.push({
-          id: data["id"],
-          nombre: data["nombre"],
-          genero: data["genero"],
-          grado: data["grado"],
-          descripcion: data["descripcion"],
-          precio: data["precio"],
-          cantidad: 1
-        });
-      }
-    },
-    listarLibro(buscar, criterio) {
-      let me = this;
-      var url = "/libro/listar?buscar=" + buscar + "&criterio=" + criterio;
-      axios
-        .get(url)
-        .then(function(response) {
-          var respuesta = response.data;
-          me.arrayLibro = respuesta.libros;
-        })
-        .catch(function(error) {
-          console.log(error);
-        });
-    },
-
     registrar() {
       if (this.validar()) {
         return;
@@ -639,16 +400,13 @@ export default {
       let me = this;
 
       axios
-        .post("/ingreso/registrar", {
-          idProveedor: this.idProveedor,
-          cantidad: this.sumaCantidad,
-          montoTotal: this.montoTotal,
-          data: this.arrayDetalle
+        .post("/plan_pago/registrar", {
+          idPlan: this.plan_id,
+          monto:this.monto
         })
         .then(function(response) {
-          me.listado = 1;
-          me.listar(1, "", "nombre");
-          me.limpiarRegistro();
+          me.cerrarModal();
+          me.listarDetalle(this.plan_id);
         })
         .catch(function(error) {
           console.log(error);
@@ -661,17 +419,14 @@ export default {
       let me = this;
 
       axios
-        .put("/ingreso/actualizar", {
-          idProveedor: this.idProveedor,
-          cantidad: this.sumaCantidad,
-          montoTotal: this.montoTotal,
-          id: this.ingreso_id,
-          data: this.arrayDetalle
+        .put("/plan_pago/actualizar", {
+           idPlan: this.plan_id,
+          monto:this.monto,
+          id:this.idCuota
         })
         .then(function(response) {
           me.listado = 1;
-          me.listar(1, "", "nombre");
-          me.limpiarRegistro();
+          me.listarDetalle(this.plan_id);
         })
         .catch(function(error) {
           console.log(error);
@@ -702,7 +457,7 @@ export default {
             let me = this;
 
             axios
-              .put("/ingreso/desactivar", {
+              .put("/cuota/desactivar", {
                 id: id
               })
               .then(function(response) {
@@ -752,7 +507,7 @@ export default {
             let me = this;
 
             axios
-              .put("/ingreso/activar", {
+              .put("/cuota/activar", {
                 id: id
               })
               .then(function(response) {
@@ -782,52 +537,30 @@ export default {
       this.errorMostrar = 0;
       this.errorMostrarMsj = [];
 
-      if (this.idProveedor == 0 )
-        this.errorMostrarMsj.push("Seleccione al Proveedor");
-      if (this.arrayDetalle.length <= 0)
-        this.errorMostrarMsj.push("No Tiene Libros Seleccionado al Detalle");
+      if (this.monto == 0  || this.monto=="")
+        this.errorMostrarMsj.push("Ingrese el Monto");
 
       if (this.errorMostrarMsj.length) this.errorMostrar = 1;
       return this.errorMostrar;
     },
     limpiarRegistro()
     { 
-      this.proveedor = "";
-      this.selectedProveedor=null;
-      this.idProveedor = 0;
-      this.cantidad = 0;
-      this.montoTotal = 0;
-      this.descripcion = "";
-      this.genero="";
-      this.grado="";
-      this.idLibro=0;
-      this.libro="";
-      this.arrayProveedor=[];
+      this.monto=0;
       this.arrayDetalle = [];
-      this.arrayLibro=[];
     },
-    mostrarDetalle(modelo, accion, data = []) {
-      switch (modelo) {
-        case "ingreso": {
-          switch (accion) {
-            case "registrar": {
-              this.listado = 0;
-              this.limpiarRegistro();
-              this.tipoAccion = 1;
-              break;
-            }
-            case "actualizar": {
+    mostrarDetalle(data = []) {
               this.listado = 0;
               this.tipoAccion = 2;
-              this.ingreso_id = data["id"];
-              this.idProveedor = data["idProveedor"];
-              this.selectedProveedor={id:data["idProveedor"],nombre:data["proveedor"]}
-              this.proveedor = data["proveedor"];
-              this.sumaCantidad=data["cantidad"];
+              this.plan_id = data["id"];
+              this.promotor = data["promotor"];
               this.montoTotal = data["montoTotal"];
-
-              let me = this;
-              var url = "/ingreso/listarDetalle?idIngreso=" + data["id"];
+              this.listarDetalle(data["id"]);
+              this.cuotaTotal();                
+    },
+    listarDetalle(id)
+    {
+ let me = this;
+              var url = "/plan_pago/listarDetalle?id=" +id;
               axios
                 .get(url)
                 .then(function(response) {
@@ -837,12 +570,6 @@ export default {
                 .catch(function(error) {
                   console.log(error);
                 });
-
-              break;
-            }
-          }
-        }
-      }
     },
     ocultarDetalle() {
       this.listado = 1;
@@ -854,7 +581,7 @@ export default {
     abrirModal() {
       this.arrayLibro= [];
       this.modal = 1;
-      this.tituloModal = "Selecione una o varias Libros";
+      this.tituloModal = "Ingresar Cuota";
     }
   },
   mounted() {

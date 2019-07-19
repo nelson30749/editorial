@@ -16,12 +16,11 @@ class EntregaController extends Controller
     {
         // if(!$request->ajax()) return redirect('/');
         $buscar = $request->buscar;
-
+        $criterio=$request->criterio;
             $entregas= Entrega::join('promotores','entregas.idPromotor','=','promotores.id')
             ->select('entregas.id','nro',DB::raw("concat(promotores.nombre,' ',promotores.apellido) as promotor"),'idPromotor','fecha','comprobante','cantidad','montoTotal','pago','entregas.estado')
-            ->where('promotores.nombre','like','%'.$buscar.'%')
-            ->orwhere('promotores.apellido','like','%'.$buscar.'%')
             ->where('entregas.estado','=','1')
+            ->where('promotores.'.$criterio,'like','%'.$buscar.'%')
             ->orderBy('entregas.id','desc')->paginate(10);
         return [
             'pagination' => [
@@ -77,7 +76,7 @@ class EntregaController extends Controller
                 $plan_pago->estado='1';
                 $plan_pago->save();
 
-                $sw=$request->couta;
+                $sw=$request->cuota;
                 if(!$sw)
                 {
                     $cuota=new Cuota();

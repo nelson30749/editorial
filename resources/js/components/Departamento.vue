@@ -99,25 +99,21 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+                    <!-- <form action="" method="post" enctype="multipart/form-data" class="form-horizontal"> -->
                         <div class="form-group row">
                             <label class="col-md-3 form-control-label" for="text-input">Nombre</label>
                             <div class="col-md-9">
-                                <input type="text" v-model="nombre" class="form-control" placeholder="Nombre de categoría">
+                                <input type="text" v-model="nombre" class="form-control" placeholder="Nombre del Departamento">
                                 
                             </div>
-                        </div>
-                        
-                           
+                        </div>                           
                      <div v-show="error" class="form-group row div-error">
                            <div class="text-center text-error">
                                  <div v-for="errors in errorMostrarMsj" :key="errors" v-text="errors">
                                  </div>
                            </div>
                     </div>
-                   
-
-                    </form>
+                    <!-- </form> -->
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
@@ -276,7 +272,7 @@ export default {
       });
 
       swalWithBootstrapButtons({
-        title: "Esta seguro de desactivar esta categoria?",
+        title: "Esta seguro de desactivar?",
         text: "You won't be able to revert this!",
         type: "warning",
         showCancelButton: true,
@@ -322,7 +318,7 @@ export default {
       });
 
       swalWithBootstrapButtons({
-        title: "Esta seguro de activar esta categoria?",
+        title: "Esta seguro de activar?",
        // text: "You won't be able to revert this!",
         type: "warning",
         showCancelButton: true,
@@ -392,7 +388,7 @@ export default {
             case "actualizar": {
               // console.log(data);
               this.modal = 1;
-              this.tituloModal = "Actualizar categoria";
+              this.tituloModal = "Actualizar";
               this.tipoAccion = 2;
               this.departamento_id = data["id"];
               this.nombre = data["nombre"];
