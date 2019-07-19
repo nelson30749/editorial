@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html lang="es">
-
+{{-- <html lang="es"> --}}
+    <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -53,8 +53,18 @@
                     </a>
                 </div>
             </li>
+            @guest
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+                            </li>
+                            @if (Route::has('register'))
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
+                                </li>
+                            @endif
+                        @else
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                     <img src="img/avatars/6.jpg" class="img-avatar" alt="admin@bootstrapmaster.com">
                     {{ Auth::user()->name }} <span class="caret"></span>
                 </a>
@@ -73,16 +83,16 @@
                                     </form>
                 </div>
             </li>
+            @endguest
         </ul>
     </header>
 
     <div class="app-body">
-        
+    
         @include('plantilla.sidebar')
-        <!-- Contenido Principal -->
-        @yield('contenido')
-        <!-- /Fin del contenido principal -->
-    </div>   
+
+            @yield('content')
+        </div>   
     </div>
     <footer class="app-footer">
         <span><a href="">SOFTWARE 1</a> &copy; 2019 derechos reservados</span>

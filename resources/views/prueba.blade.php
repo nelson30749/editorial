@@ -76,16 +76,14 @@
         </ul>
     </header>
 
-    <div class="app-body">
-        
+        <div class="app-body">
         @include('plantilla.sidebar')
-        <!-- Contenido Principal -->
-        @yield('contenido')
-        <!-- /Fin del contenido principal -->
-    </div>   
+
+        @yield('content')
+    </div>  
     </div>
     <footer class="app-footer">
-        <span><a href="">SOFTWARE 1</a> &copy; 2019 derechos reservados</span>
+        <span><a href="">SOFTWARE 1</a> &copy; 2018 derechos reservados</span>
         <span class="ml-auto">Desarrollado por estudiantes de Ing Sistemas <a href=""></a></span>
     </footer>
     

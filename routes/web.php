@@ -11,9 +11,13 @@
 |
 */
 
-Route::get('/', function () {
-    return view('contenido/contenido');
-});
+
+Route::group(['middleware'=>['auth']],function(){
+    Route::get('/',function(){
+        return view('contenido/contenido');
+    })->name('main');
+
+Route::get('/dashboard','DashboardController');
 
 Route::get('/ingreso', 'IngresoController@index');
 Route::post('/ingreso/registrar', 'IngresoController@store');
@@ -70,3 +74,8 @@ Route::get('/proveedor/select', 'ProveedorController@select');
 Route::get('/plan_pago', 'PlanPagoController@index');
 Route::get('/plan_pago/listarDetalle', 'PlanPagoController@listarDetalle');
 Route::post('/plan_pago/registrar', 'PlanPagoController@store');
+ 
+});
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

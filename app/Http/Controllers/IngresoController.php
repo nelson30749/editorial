@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Ingreso;
+use App\Libro;
 use App\DetalleIngreso;
 
 class IngresoController extends Controller
@@ -62,8 +63,10 @@ class IngresoController extends Controller
             DB::beginTransaction();
             try{
                 $mytime= Carbon::now('America/La_Paz');
+                $year=date('Y');
                 $ingreso = new Ingreso();
-                $ingreso->nro = 0;
+                $contar=Ingreso::whereYear('ingresos.fecha','=',$year)->count();
+                $ingreso->nro = $contar+1;
                 $ingreso->idProveedor=$request->idProveedor;
                 $ingreso->fecha = $mytime->toDateTimeString();                
                 $ingreso->cantidad = $request->cantidad;
@@ -83,6 +86,9 @@ class IngresoController extends Controller
                     $detalle->precio = $det['precio']; 
                     $detalle->estado= '1';
                     $detalle->save();
+                    $libro = Libro::find($det['id']);
+                    $libro->stock=$libro->stock+$detalle->cantidad;
+                    $libro->save();
                 } 
                 DB::commit();
             } catch (Exception $e){

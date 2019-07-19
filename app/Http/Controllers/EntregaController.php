@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use App\Entrega;
 use App\PlanPago;
 use App\Cuota;
+use App\Libro;
 use App\DetalleEntrega;
 
 class EntregaController extends Controller
@@ -54,7 +55,9 @@ class EntregaController extends Controller
                 
                 $mytime= Carbon::now('America/La_Paz');
                 $entrega = new Entrega();
-                $entrega->nro = 1;
+                $year=date('Y');
+                $contar=Entrega::whereYear('entregas.fecha','=',$year)->count();
+                $entrega->nro = $contar+1;
                 $entrega->idPromotor=$request->idPromotor;
                 $entrega->fecha = $mytime->toDateTimeString();                 
                 $entrega->comprobante=$request->comprobante;
@@ -81,6 +84,8 @@ class EntregaController extends Controller
                 {
                     $cuota=new Cuota();
                     $cuota->idPlan=$plan_pago->id;
+                    $contar=Couta::whereYear('fecha','=',$year)->count();
+                    $cuota->nro = $contar+1;
                     $cuota->nro=1;
                     $cuota->fecha=$mytime->toDateTimeString();
                     $cuota->monto=$request->montoTotal;
@@ -106,6 +111,9 @@ class EntregaController extends Controller
                     $detalle->precio = $det['precio']; 
                     $detalle->estado= '1';
                     $detalle->save();
+                    $libro = Libro::find($det['id']);
+                    $libro->stock=$libro->stock-$detalle->cantidad;
+                    $libro->save();
                 } 
 
                 DB::commit();

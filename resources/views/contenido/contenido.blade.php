@@ -2,7 +2,7 @@
 @section('contenido')
 
        <template v-if="menu==0"> 
-      <h1>Contenido del menu 0</h1>
+              <dashboard></dashboard>
        </template>
 
        <template v-if="menu==1">   
