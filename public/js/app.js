@@ -2752,6 +2752,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 
 
@@ -3251,6 +3257,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue_select__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(vue_select__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var vue_select_dist_vue_select_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vue-select/dist/vue-select.css */ "./node_modules/vue-select/dist/vue-select.css");
 /* harmony import */ var vue_select_dist_vue_select_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(vue_select_dist_vue_select_css__WEBPACK_IMPORTED_MODULE_2__);
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -40323,7 +40335,31 @@ var render = function() {
                                         ]),
                                         _vm._v(" "),
                                         _c("td", [
-                                          _vm._v(_vm._s(detalle.precio))
+                                          _c("input", {
+                                            directives: [
+                                              {
+                                                name: "model",
+                                                rawName: "v-model",
+                                                value: detalle.precio,
+                                                expression: "detalle.precio"
+                                              }
+                                            ],
+                                            staticClass: "form-control",
+                                            attrs: { type: "number" },
+                                            domProps: { value: detalle.precio },
+                                            on: {
+                                              input: function($event) {
+                                                if ($event.target.composing) {
+                                                  return
+                                                }
+                                                _vm.$set(
+                                                  detalle,
+                                                  "precio",
+                                                  $event.target.value
+                                                )
+                                              }
+                                            }
+                                          })
                                         ]),
                                         _vm._v(" "),
                                         _c("td", [
@@ -41461,7 +41497,31 @@ var render = function() {
                                       ]),
                                       _vm._v(" "),
                                       _c("td", [
-                                        _vm._v(_vm._s(detalle.precio))
+                                        _c("input", {
+                                          directives: [
+                                            {
+                                              name: "model",
+                                              rawName: "v-model",
+                                              value: detalle.precio,
+                                              expression: "detalle.precio"
+                                            }
+                                          ],
+                                          staticClass: "form-control",
+                                          attrs: { type: "number" },
+                                          domProps: { value: detalle.precio },
+                                          on: {
+                                            input: function($event) {
+                                              if ($event.target.composing) {
+                                                return
+                                              }
+                                              _vm.$set(
+                                                detalle,
+                                                "precio",
+                                                $event.target.value
+                                              )
+                                            }
+                                          }
+                                        })
                                       ]),
                                       _vm._v(" "),
                                       _c("td", [

@@ -82,15 +82,15 @@ class EntregaController extends Controller
                 $sw=$request->cuota;
                 if(!$sw)
                 {
-                    $cuota=new Cuota();
-                    $cuota->idPlan=$plan_pago->id;
-                    $contar=Couta::whereYear('fecha','=',$year)->count();
-                    $cuota->nro = $contar+1;
-                    $cuota->nro=1;
-                    $cuota->fecha=$mytime->toDateTimeString();
-                    $cuota->monto=$request->montoTotal;
-                    $cuota->estado='1';
-                    $cuota->save();
+                    $cuotas=new Cuota();
+                    $cuotas->idPlan=$plan_pago->id;
+                    $contar=Cuota::whereYear('fecha','=',$year)->count();
+                    $cuotas->nro = $contar+1;
+                    $cuotas->nro=1;
+                    $cuotas->fecha=$mytime->toDateTimeString();
+                    $cuotas->monto=$request->montoCuota;
+                    $cuotas->estado='1';
+                    $cuotas->save();
                 }
                 }
 
@@ -111,6 +111,7 @@ class EntregaController extends Controller
                     $detalle->precio = $det['precio']; 
                     $detalle->estado= '1';
                     $detalle->save();
+                    
                     $libro = Libro::find($det['id']);
                     $libro->stock=$libro->stock-$detalle->cantidad;
                     $libro->save();

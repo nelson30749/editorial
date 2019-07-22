@@ -18,7 +18,7 @@ class CreateLibrosTable extends Migration
             $table->string('nombre',100);
             $table->string('genero',100);
             $table->string('grado',100);
-            $table->string('descripcion',200);
+            $table->string('descripcion',200)->nullable();
             $table->integer('stock');
             $table->decimal('precio',20,2);
             $table->boolean('estado')->default(1);  

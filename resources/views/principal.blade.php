@@ -56,13 +56,13 @@
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                     <img src="img/avatars/6.jpg" class="img-avatar" alt="admin@bootstrapmaster.com">
-                    {{ Auth::user()->name }} <span class="caret"></span>
+                    {{-- {{ Auth::user()->name }} <span class="caret"></span> --}}
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
                     <div class="dropdown-header text-center">
                         <strong>Cuenta</strong>
                     </div>
-                    <a class="dropdown-item" href="#"><i class="fa fa-user"></i> Perfil</a>
+                    {{-- <a class="dropdown-item" href="#"><i class="fa fa-user"></i> Perfil</a>
                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
@@ -70,7 +70,7 @@
 
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                                         @csrf
-                                    </form>
+                                    </form> --}}
                 </div>
             </li>
         </ul>

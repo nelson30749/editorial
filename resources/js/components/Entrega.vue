@@ -334,7 +334,13 @@
                       <td>{{ detalle.genero }}</td>
                       <td v-text="detalle.grado"></td>
                       <td>{{ detalle.descripcion }}</td>
-                      <td>{{ detalle.precio }}</td>
+                       <td>
+                        <input
+                          type="number"
+                          v-model="detalle.precio"
+                          class="form-control"
+                        />
+                      </td>
                       <td>
                         <input
                           type="number"
