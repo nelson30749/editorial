@@ -155,7 +155,7 @@
                 <div class="form-group">
                   <label>
                     Proomotor
-                    <span v-show="promotor==''">(*Selecione)</span>
+                    <span v-show="promotor==''" class=" text-error">(*Selecione)</span>
                   </label>
                   <v-select
                     v-model="selectedPromotor"
@@ -170,7 +170,7 @@
               <div class="col-md-6">
                 <div class="form-group">
                   <label for>Entrega 
-                     <span v-show="pago==2">(*Selecione)</span>
+                     <span v-show="pago==2" class=" text-error">(*Selecione)</span>
                   </label>
                   <select class="form-control col-md-12" v-model="pago">
                     <option value=2 >Seleccione</option>
@@ -305,7 +305,7 @@
                   <thead>
                     <tr>
                       <th>Opciones</th>
-                      <td>ID</td>
+                      <th>ID</th>
                       <th>Nombre</th>
                       <th>Genero</th>
                       <th>Grado</th>
@@ -337,13 +337,17 @@
                        <td>
                         <input
                           type="number"
+                          min="0"
                           v-model="detalle.precio"
+                          @keyup.enter="ingresoTotal()"
                           class="form-control"
                         />
                       </td>
                       <td>
                         <input
                           type="number"
+                          min="0"
+                          :max="detalle.stock"
                           @keyup.enter="ingresoTotal()"
                           v-model="detalle.cantidad"
                           class="form-control"
@@ -537,6 +541,7 @@ export default {
       grado: "",
       descripcion: "",
       precio: 0,
+      stock:0,
       sumaCantidad:0,
       cuota:true,
       montoCuota:0,
@@ -632,6 +637,7 @@ export default {
       me.grado = val1.grado;
       me.descripcion = val1.descripcion;
       me.precio = val1.precio;
+      me.stock=val1.stock;
     },
     cambiarPagina(page, buscar, criterio) {
       let me = this;
@@ -699,7 +705,8 @@ export default {
             grado: me.grado,
             descripcion: me.descripcion,
             precio: me.precio,
-            cantidad: me.cantidad
+            cantidad: me.cantidad,
+            stock:me.stock
           });
         }
       }
@@ -722,7 +729,8 @@ export default {
           grado: data["grado"],
           descripcion: data["descripcion"],
           precio: data["precio"],
-          cantidad: 1
+          cantidad: 1,
+          stock: data["stock"]
         });
       }
     },
@@ -916,6 +924,15 @@ export default {
         this.errorMostrarMsj.push("Seleccione la Entrega");
       if (this.arrayDetalle.length <= 0)
            this.errorMostrarMsj.push("No Tiene Libros Seleccionado al Detalle");
+        let sw=true;
+      for(var i=0 ;i<this.arrayDetalle.length && sw==true; i++)
+      {
+        if(this.arrayDetalle[i].cantidad>this.arrayDetalle[i].stock)
+        {
+          this.errorMostrarMsj.push("La Cantidad del Libro "+this.arrayDetalle[i].nombre +" es Mayor que el Stock");
+          sw=false;
+        }
+      }
 
       if (this.errorMostrarMsj.length) this.errorMostrar = 1;
       return this.errorMostrar;

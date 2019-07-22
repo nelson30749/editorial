@@ -241,7 +241,9 @@
                      <td>
                         <input
                           type="number"
+                          min="0"
                           v-model="detalle.precio"
+                           @keyup.enter="ingresoTotal()"
                           class="form-control"
                         />
                       </td>

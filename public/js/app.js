@@ -2758,6 +2758,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 
 
 
@@ -2802,6 +2806,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.component("v-select", vue_select__WEB
       grado: "",
       descripcion: "",
       precio: 0,
+      stock: 0,
       sumaCantidad: 0,
       cuota: true,
       montoCuota: 0,
@@ -2897,6 +2902,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.component("v-select", vue_select__WEB
       me.grado = val1.grado;
       me.descripcion = val1.descripcion;
       me.precio = val1.precio;
+      me.stock = val1.stock;
     },
     cambiarPagina: function cambiarPagina(page, buscar, criterio) {
       var me = this; // actualizar la Pagina
@@ -2963,7 +2969,8 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.component("v-select", vue_select__WEB
             grado: me.grado,
             descripcion: me.descripcion,
             precio: me.precio,
-            cantidad: me.cantidad
+            cantidad: me.cantidad,
+            stock: me.stock
           });
         }
       }
@@ -2988,7 +2995,8 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.component("v-select", vue_select__WEB
           grado: data["grado"],
           descripcion: data["descripcion"],
           precio: data["precio"],
-          cantidad: 1
+          cantidad: 1,
+          stock: data["stock"]
         });
       }
     },
@@ -3158,6 +3166,15 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.component("v-select", vue_select__WEB
       if (this.idPromotor == 0) this.errorMostrarMsj.push("Seleccione al Promotor");
       if (this.pago == 2) this.errorMostrarMsj.push("Seleccione la Entrega");
       if (this.arrayDetalle.length <= 0) this.errorMostrarMsj.push("No Tiene Libros Seleccionado al Detalle");
+      var sw = true;
+
+      for (var i = 0; i < this.arrayDetalle.length && sw == true; i++) {
+        if (this.arrayDetalle[i].cantidad > this.arrayDetalle[i].stock) {
+          this.errorMostrarMsj.push("La Cantidad del Libro " + this.arrayDetalle[i].nombre + " es Mayor que el Stock");
+          sw = false;
+        }
+      }
+
       if (this.errorMostrarMsj.length) this.errorMostrar = 1;
       return this.errorMostrar;
     },
@@ -3257,6 +3274,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue_select__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(vue_select__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var vue_select_dist_vue_select_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vue-select/dist/vue-select.css */ "./node_modules/vue-select/dist/vue-select.css");
 /* harmony import */ var vue_select_dist_vue_select_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(vue_select_dist_vue_select_css__WEBPACK_IMPORTED_MODULE_2__);
+//
+//
 //
 //
 //
@@ -39781,7 +39800,8 @@ var render = function() {
                                       value: _vm.promotor == "",
                                       expression: "promotor==''"
                                     }
-                                  ]
+                                  ],
+                                  staticClass: " text-error"
                                 },
                                 [_vm._v("(*Selecione)")]
                               )
@@ -39824,7 +39844,8 @@ var render = function() {
                                     value: _vm.pago == 2,
                                     expression: "pago==2"
                                   }
-                                ]
+                                ],
+                                staticClass: " text-error"
                               },
                               [_vm._v("(*Selecione)")]
                             )
@@ -40345,9 +40366,24 @@ var render = function() {
                                               }
                                             ],
                                             staticClass: "form-control",
-                                            attrs: { type: "number" },
+                                            attrs: { type: "number", min: "0" },
                                             domProps: { value: detalle.precio },
                                             on: {
+                                              keyup: function($event) {
+                                                if (
+                                                  !$event.type.indexOf("key") &&
+                                                  _vm._k(
+                                                    $event.keyCode,
+                                                    "enter",
+                                                    13,
+                                                    $event.key,
+                                                    "Enter"
+                                                  )
+                                                ) {
+                                                  return null
+                                                }
+                                                return _vm.ingresoTotal()
+                                              },
                                               input: function($event) {
                                                 if ($event.target.composing) {
                                                   return
@@ -40373,7 +40409,11 @@ var render = function() {
                                               }
                                             ],
                                             staticClass: "form-control",
-                                            attrs: { type: "number" },
+                                            attrs: {
+                                              type: "number",
+                                              min: "0",
+                                              max: detalle.stock
+                                            },
                                             domProps: {
                                               value: detalle.cantidad
                                             },
@@ -40814,7 +40854,7 @@ var staticRenderFns = [
       _c("tr", [
         _c("th", [_vm._v("Opciones")]),
         _vm._v(" "),
-        _c("td", [_vm._v("ID")]),
+        _c("th", [_vm._v("ID")]),
         _vm._v(" "),
         _c("th", [_vm._v("Nombre")]),
         _vm._v(" "),
@@ -41507,9 +41547,24 @@ var render = function() {
                                             }
                                           ],
                                           staticClass: "form-control",
-                                          attrs: { type: "number" },
+                                          attrs: { type: "number", min: "0" },
                                           domProps: { value: detalle.precio },
                                           on: {
+                                            keyup: function($event) {
+                                              if (
+                                                !$event.type.indexOf("key") &&
+                                                _vm._k(
+                                                  $event.keyCode,
+                                                  "enter",
+                                                  13,
+                                                  $event.key,
+                                                  "Enter"
+                                                )
+                                              ) {
+                                                return null
+                                              }
+                                              return _vm.ingresoTotal()
+                                            },
                                             input: function($event) {
                                               if ($event.target.composing) {
                                                 return
