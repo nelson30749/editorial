@@ -12,10 +12,10 @@
 */
 
 
-// Route::group(['middleware'=>['auth']],function(){
-    Route::get('/',function(){
-        return view('contenido/contenido');
-    })->name('main');
+Route::group(['middleware'=>['auth']],function(){
+    // Route::get('/',function(){
+    //     return view('contenido/contenido');
+    // })->name('main');
 
 Route::get('/dashboard','DashboardController');
 
@@ -77,7 +77,7 @@ Route::post('/plan_pago/registrar', 'PlanPagoController@store');
  
 Route::get('/reporte/promotor', 'ReporteController@promotor');
 
-// });
+});
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/', 'HomeController@index')->name('home');
