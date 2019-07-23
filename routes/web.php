@@ -17,6 +17,8 @@ Route::group(['middleware'=>['auth']],function(){
     //     return view('contenido/contenido');
     // })->name('main');
 
+Route::get('/', 'HomeController@index')->name('home');
+
 Route::get('/dashboard','DashboardController');
 
 Route::get('/ingreso', 'IngresoController@index');
@@ -80,4 +82,4 @@ Route::get('/reporte/promotor', 'ReporteController@promotor');
 });
 Auth::routes();
 
-Route::get('/', 'HomeController@index')->name('home');
+

@@ -50,6 +50,7 @@ class PlanPagoController extends Controller
     }
     public function store(Request $request)
     {
+         if(!$request->ajax()) return redirect('/');
         DB::beginTransaction();
         try{
 
