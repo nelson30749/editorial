@@ -84,7 +84,7 @@ class EntregaController extends Controller
                 {
                     $cuotas=new Cuota();
                     $cuotas->idPlan=$plan_pago->id;
-                    $contar=Cuota::whereYear('fecha','=',$year)->count();
+                    $contar=Cuota::whereYear('fecha','=',$year)->max('nro');
                     $cuotas->nro = $contar+1;
                     $cuotas->nro=1;
                     $cuotas->fecha=$mytime->toDateTimeString();

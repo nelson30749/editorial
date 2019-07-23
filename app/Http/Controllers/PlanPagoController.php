@@ -40,18 +40,41 @@ class PlanPagoController extends Controller
             $detalles= Cuota::where('idPlan','=',$id)
             ->where('cuotas.estado','=','1')
             ->get();
+            $sumaCuota=Cuota::join('plan_pagos','cuotas.idPlan','plan_pagos.id')
+            ->select(DB::raw('sum(cuotas.monto) as montoCuota'),'plan_pagos.pago','idPlan')
+            ->where('cuotas.idPlan','=',$id)
+            ->groupBy('plan_pagos.pago','idPlan')
+            ->get();
      
-        return ['detalles' => $detalles];
+        return ['sumaCuota'=>$sumaCuota,'detalles' => $detalles];
     }
     public function store(Request $request)
     {
+        DB::beginTransaction();
+        try{
+
         $mytime= Carbon::now('America/La_Paz');
+        $year=date('Y');
         $cuota=new Cuota();
         $cuota->idPlan=$request->idPlan;
-        $cuota->nro=1;
+        $contar=Cuota::whereYear('fecha','=',$year)->max('nro');
+        $cuota->nro = $contar+1;
         $cuota->fecha=$mytime->toDateTimeString();
         $cuota->monto=$request->monto;
         $cuota->estado='1';
         $cuota->save();
+        
+        $suma=Cuota::where('idPlan','=',$cuota->idPlan)->sum('monto');
+        $plan=PlanPago::find($cuota->idPlan);
+        if($suma==$plan->montoTotal)
+        {
+            $plan->pago=1;
+            $plan->save();
+        }
+
+        DB::commit();
+        } catch (Exception $e){
+        DB::rollBack();
+        }
     }
 }

@@ -35,6 +35,7 @@ Vue.component('promotor', require('./components/Promotor.vue').default);
 Vue.component('entrega', require('./components/Entrega.vue').default);
 Vue.component('plan_pago', require('./components/PlanPago.vue').default);
 Vue.component('dashboard', require('./components/Dashboard.vue').default);
+Vue.component('reporte', require('./components/Reporte.vue').default);
 
 const app = new Vue({
     el: '#app',

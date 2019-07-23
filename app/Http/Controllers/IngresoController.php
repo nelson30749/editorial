@@ -65,7 +65,7 @@ class IngresoController extends Controller
                 $mytime= Carbon::now('America/La_Paz');
                 $year=date('Y');
                 $ingreso = new Ingreso();
-                $contar=Ingreso::whereYear('ingresos.fecha','=',$year)->count();
+                $contar=Ingreso::whereYear('ingresos.fecha','=',$year)->max('nro');
                 $ingreso->nro = $contar+1;
                 $ingreso->idProveedor=$request->idProveedor;
                 $ingreso->fecha = $mytime->toDateTimeString();                

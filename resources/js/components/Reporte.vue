@@ -10,7 +10,7 @@
       <!-- Ejemplo de tabla Listado -->
       <div class="card">
         <div class="card-header">
-          <i class="fa fa-align-justify"></i> Plan Pago
+          <i class="fa fa-align-justify"></i> Reporte Promotor
           <!-- <button
             type="button"
             @click="mostrarDetalle()"
@@ -20,7 +20,7 @@
           </button> -->
         </div>
         <!---Listado -->
-        <template v-if="listado==1">
+
           <div class="card-body">
             <div class="form-group row">
               <div class="col-md-6">
@@ -47,15 +47,8 @@
               <thead>
                 <tr>
                   <th>ID</th>
-                  <th>N° Entrega</th>
                   <th>Promotor</th>
-                  <th>Fecha</th>
-                  <th>Fecha Inicial</th>
-                  <th>Fecha Final</th>
-                  <th>Pago</th>
                   <th>Monto Total</th>
-                  <th>Estado</th>
-                  <th>Opciones</th>
                 </tr>
               </thead>
               <tbody>
@@ -63,51 +56,8 @@
                   <td>
                     <span class="badge badge-success" v-text="data.id"></span>
                   </td>
-                  <td v-text="data.idEntrega"></td>
                   <td v-text="data.promotor"></td>
-                  <td v-text="data.fecha"></td>
-                  <td v-text="data.fechaInicio"></td>
-                  <td v-text="data.fechaFin"></td>
-                  <td>
-                     <div v-if="data.pago==1">
-                      <span class="badge badge-success">Terminado</span>
-                    </div>
-                    <div v-else>
-                      <span class="badge badge-danger">En Proceso</span>
-                    </div>
-                  </td>
-                  <td v-text="data.montoTotal"></td>
-                  <td>
-                    <div v-if="data.estado">
-                      <span class="badge badge-success">Activo</span>
-                    </div>
-                    <div v-else>
-                      <span class="badge badge-danger">Desactivado</span>
-                    </div>
-                  </td>
-                  <td>
-                    <button
-                      type="button"
-                      @click="mostrarDetalle(data)"
-                      class="btn btn-success btn-sm"
-                    >
-                      <i class="icon-eye"></i>
-                    </button> &nbsp;
-                    <template v-if="data.estado">
-                      <button
-                        type="button"
-                        class="btn btn-danger btn-sm"
-                        @click="desactivar(data.id)"
-                      >
-                        <i class="icon-trash"></i>
-                      </button>
-                    </template>
-                    <template v-else>
-                      <button type="button" class="btn btn-info btn-sm" @click="activar(data.id)">
-                        <i class="icon-check"></i>
-                      </button>
-                    </template>
-                  </td>
+                  <td v-text="data.pagado"></td>
                 </tr>
               </tbody>
             </table>
@@ -144,165 +94,11 @@
               </ul>
             </nav>
           </div>
-        </template>
-        <!-- Fin de Listado-->
-        <!---Detalle-->
-
-        <template v-else-if="listado==0">
-          <div class="card-body">
-            <div class="form-group row border">
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label>
-                    Promotor
-                  </label>
-                   <input
-                    type="text"
-                    disabled
-                    v-model="promotor"
-                    class="form-control"
-                    placeholder="Promotor.."
-                  >
-                </div>
-              </div>
-
-              <div class="col-md-2">
-                <div class="form-group">
-                  <label for>
-                    ID Plan
-                    <br>
-                  </label>
-                  <input
-                    type="text"
-                    disabled
-                    v-model="plan_id"
-                    class="form-control"
-                    placeholder="ID.."
-                  >
-                </div>
-              </div>
-               <div class="col-md-2" v-if="pago==1">
-                <div class="form-group">
-                  <button class="btn btn-success btnagregar">
-                    <i class="icon-plus">Terminado</i>
-                  </button>
-                </div>
-              </div>
-              <div class="col-md-2" v-else>
-                <div class="form-group">
-                  <button @click="abrirModal()" class="btn btn-success btnagregar">
-                    <i class="icon-plus">Agregar Cuota</i>
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <div class="form-group row border">
-              <div class="table-responsive col-md-12">
-                <table class="table table-bordered table-striped table-sm">
-                  <thead>
-                    <tr>
-                      <th>ID</th>
-                      <th>N°</th>
-                      <th>Fecha</th>
-                      <th>Monto</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="(detalle) in arrayDetalle" :key="detalle.id">
-                      <td>
-                        <span class="badge badge-success" v-text="detalle.id"></span>
-                      </td>
-                        <td>
-                        <span class="badge badge-success" v-text="detalle.nro"></span>
-                      </td>
-                      <td v-text="detalle.fecha"></td>
-                      <td>{{ detalle.monto }}</td>
-                    </tr>
-                    <tr>
-                      <td>Total</td>
-                      <td>Monto a Pagar: {{ montoTotal }}</td>
-                      <td>Saldo Restante: {{ (montoTotal-sumaCuota).toFixed(2) }}</td>
-                      <td>Monto Cuota: {{ sumaCuota }}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            <!---listado formula-->
-            <div class="form-group row">
-              <div class="col-md-12">
-                <button type="button" class="btn btn-secondary" @click="ocultarDetalle()">Salir</button>
-              
-                <!-- <button
-                  type="button"
-                  v-if="tipoAccion==2"
-                  class="btn btn-primary"
-                  @click="actualizar();"
-                >Actualizar</button> -->
-              </div>
-            </div>
-          </div>
-        </template>
+       
         <!--Fin de Detalle -->
       </div>
       <!-- Fin ejemplo de tabla Listado -->
     </div>
-    <!--Inicio del modal agregar/actualizar-->
-    <div
-      class="modal fade"
-      tabindex="-1"
-      :class="{'mostrar' : modal}"
-      role="dialog"
-      aria-labelledby="myModalLabel"
-      style="display: none;"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog modal-primary modal-lg" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h4 class="modal-title" v-text="tituloModal"></h4>
-            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-              <span aria-hidden="true">×</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <!-- <form action method="post" enctype="multipart/form-data" class="form-horizontal"> -->
-              <div class="form-group row">
-                <label class="col-md-3 form-control-label" for="text-input">Monto</label>
-                <div class="col-md-9">
-                  <input
-                    type="number"
-                    v-model="monto"
-                    class="form-control"
-                    placeholder="Monto............."
-                  />
-                </div>
-              </div>
-              <div class="col-md-12">
-                <div v-show="errorMostrar" class="form-group row div-error">
-                  <div class="text-center text-error">
-                    <div v-for="error in errorMostrarMsj" :key="error" v-text="error"></div>
-                  </div>
-                </div>
-              </div>
-            <!-- </form> -->
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-            <button
-              type="button"
-              class="btn btn-primary"
-              @click="registrar()"
-            >Guardar</button>
-          </div>
-        </div>
-        <!-- /.modal-content -->
-      </div>
-      <!-- /.modal-dialog -->
-    </div>
-    <!--Fin del modal-->
   </main>
 </template>
 <script>
@@ -371,7 +167,7 @@ export default {
   methods: {
     listar(page, buscar, criterio) {
       let me = this;
-      var url = "/plan_pago?page=" + page + "&buscar=" + buscar+"&criterio="+criterio;
+      var url = "/reporte/promotor?page=" + page + "&buscar=" + buscar+"&criterio="+criterio;
       axios
         .get(url)
         .then(function(response) {
@@ -550,8 +346,6 @@ export default {
       this.plan_id=0;
       this.idCuota=0;
       this.arrayDetalle=[];
-      this.montoTotal=0;
-      this.montoCuota=0;
     },
     mostrarDetalle(data = []) {
               this.listado = 0;
@@ -581,7 +375,6 @@ export default {
     ocultarDetalle() {
       this.listado = 1;
       this.limpiarRegistro();
-      this.listar(1, "", "nombre");
     },
     cerrarModal() {
       this.modal = 0;

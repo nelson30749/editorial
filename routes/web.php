@@ -75,6 +75,8 @@ Route::get('/plan_pago', 'PlanPagoController@index');
 Route::get('/plan_pago/listarDetalle', 'PlanPagoController@listarDetalle');
 Route::post('/plan_pago/registrar', 'PlanPagoController@store');
  
+Route::get('/reporte/promotor', 'ReporteController@promotor');
+
 // });
 Auth::routes();
 
